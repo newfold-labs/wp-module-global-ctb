@@ -5,6 +5,10 @@ height="42" />
 
 # WordPress CTB Module
 
+[![Version Number](https://img.shields.io/github/v/release/newfold-labs/wp-module-ctb?color=21a0ed&labelColor=333333)](https://github.com/newfold/wp-module-ctb/releases)
+[![Lint](https://github.com/newfold-labs/wp-module-ctb/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/newfold-labs/wp-module-ctb/actions/workflows/lint.yml)
+[![License](https://img.shields.io/github/license/newfold-labs/wp-module-ctb?labelColor=333333&color=666666)](https://raw.githubusercontent.com/newfold-labs/wp-module-ctb/master/LICENSE)
+
 Newfold module for 'Click to Buy' functionality in brand plugins
 
 ## Installation
