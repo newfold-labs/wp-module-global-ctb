@@ -57,29 +57,20 @@ class CTB {
 			true
 		);
 
-		// Inline script for global vars
+		// Calculate and add admin inline values
+		$hasToken      = ! empty( get_option( 'nfd_data_token' ) );
+		$customerData  = container()->plugin()->customer;
+		$hasCustomerId = ! empty( $customerData ) && ! empty( $customerData['customer_id'] );
+		$supportsCTB   = $hasToken && $hasCustomerId;
+
+		// Inline script for global vars for ctb
 		wp_localize_script(
-			'newfold-ctb',
-			'nfdctb',
+			'newfold-ctb', // script handle
+			'nfdctb',      //js object
 			array(
-				'restApiUrl'   => esc_url_raw( get_home_url() . '/index.php?rest_route=/' ),
-				'restApiNonce' => wp_create_nonce( 'wp_rest' ),
+				'supportsCTB'  => true,// $supportsCTB,
 			)
 		);
-
-		// Calculate and add admin inline values
-		$token         = get_option( 'nfd_data_token' );
-		$customerData  = container()->plugin()->customer;
-		$hasToken      = ! empty( $token );
-		$hasCustomerId = ! empty( $customerData ) && ! empty( $customerData['customer_id'] );
-		$showCTBs      = $hasToken && $hasCustomerId;
-		$isJarvis      = get_option( 'bh_platform' ) === 'jarvis' ? 'true' : null;
-
-		wp_add_inline_script( 'newfold-ctb', 'window.bluehostWpAdminUrl="' . \admin_url() . '";', 'before' );
-		wp_add_inline_script( 'newfold-ctb', 'window.nfBrandPlatform="' . \get_option( 'mm_brand' ) . '";', 'before' );
-		wp_add_inline_script( 'newfold-ctb', 'window.nfdIsJarvis="' . $isJarvis . '";', 'before' );
-		wp_add_inline_script( 'newfold-ctb', 'window.nfdRestRoot="' . \get_home_url() . '/index.php?rest_route=";', 'before' );
-		wp_add_inline_script( 'newfold-ctb', $showCTBs ? 'window.nfdConnected=true;' : 'window.nfdConnected=false;', 'before' );
 
 		// Styles
 		wp_enqueue_style(

@@ -59,7 +59,7 @@ class CTBApi {
 
 		// Add route for purchasing a CTB
 		register_rest_route(
-			'bluehost/v1',
+			'newfold-ctb/v1',
 			'/ctb/(?P<id>[a-zA-Z0-9-]+)',
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,

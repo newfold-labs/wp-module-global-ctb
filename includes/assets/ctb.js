@@ -4,13 +4,13 @@
 		let ctbId = e.target.getAttribute('data-ctb-id');
 		e.target.closest('.ctb-actions').innerHTML = '<div class="ctb-loader"></div>';
 		window.fetch(
-			`${ window.nfdctb.restApiUrl }newfold-ctb/v1/ctb/${ ctbId }`,
+			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v1/ctb/${ ctbId }`,
 			{
 				credentials: 'same-origin',
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-WP-Nonce': window.nfdctb.restApiNonce,
+					'X-WP-Nonce': window.nfdplugin.restApiNonce,
 				},
 			}
 		)
@@ -33,12 +33,12 @@
 		let modal = openModal(e);
 		let modalWindow = modal.querySelector('.ctb-modal-content')
 		window.fetch(
-			`${ window.nfdctb.restApiUrl }newfold-ctb/v1/ctb/${ e.target.getAttribute('data-ctb-id') }`,
+			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v1/ctb/${ e.target.getAttribute('data-ctb-id') }`,
 			{
 				credentials: 'same-origin',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-WP-Nonce': window.nfdctb.restApiNonce,
+					'X-WP-Nonce': window.nfdplugin.restApiNonce,
 				},
 			}
 		)
@@ -108,13 +108,13 @@
 		if (notice) {
 			notice.parentNode.removeChild(notice);
 			window.fetch(
-				`${ window.nfdctb.restApiUrl }newfold-notifications/v1/notifications/${ notice.dataset.id }`,
+				`${ window.nfdplugin.restApiUrl }/newfold-notifications/v1/notifications/${ notice.dataset.id }`,
 				{
 					credentials: 'same-origin',
 					method: 'DELETE',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-WP-Nonce': window.nfdctb.restApiNonce,
+						'X-WP-Nonce': window.nfdplugin.restApiNonce,
 					},
 				}
 			);
@@ -126,7 +126,7 @@
 		() => {
 			document.getElementById('wpwrap').addEventListener('click', function(event) {
 				if (event.target.dataset.action === 'load-nfd-ctb') {
-					if ( window.nfdConnected ) { // has token and customer id
+					if ( window.nfdctb.supportsCTB ) { // has token and customer id
 						event.preventDefault();
 						loadCtb(event);
 					} else {
