@@ -15,6 +15,7 @@ if ( function_exists( 'add_action' ) ) {
 					'name'     => 'ctb',
 					'label'    => __( 'ctb', 'newfold-ctb-module' ),
 					'callback' => function ( Container $container ) {
+						require_once __DIR__ . '/includes/Ctb.php';
 						new CTB( $container );
 					},
 					'isActive' => true,
