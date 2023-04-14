@@ -47,7 +47,7 @@ class CTB {
 			'7.4.0',
 			false
 		);
-		
+
 		// load ctb script
 		wp_enqueue_script(
 			'newfold-ctb',
@@ -66,9 +66,9 @@ class CTB {
 		// Inline script for global vars for ctb
 		wp_localize_script(
 			'newfold-ctb', // script handle
-			'nfdctb',      //js object
+			'nfdctb',      // js object
 			array(
-				'supportsCTB'  => true,// $supportsCTB,
+				'supportsCTB' => $supportsCTB,
 			)
 		);
 
@@ -80,7 +80,7 @@ class CTB {
 			container()->plugin()->version
 		);
 	}
-	
+
 	/**
 	 * Add container to footer for modal components
 	 *
@@ -89,5 +89,5 @@ class CTB {
 	public function ctb_footer() {
 		echo "<div id='nfd-ctb-container' aria-hidden='true'></div>";
 	}
-	
+
 }
