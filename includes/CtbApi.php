@@ -76,7 +76,7 @@ class CTBApi {
 					$payload = array(
 						'ctb_id'      => $ctb_id,
 						'customer_id' => $customer_data['customer_id'],
-						'site_id'     => container()->plugin()->siteid,
+						'site_id'     => container()->plugin()->site_id,
 					);
 
 					$response = wp_remote_post(
