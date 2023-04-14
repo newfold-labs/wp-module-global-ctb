@@ -11,7 +11,7 @@ if ( function_exists( 'add_action' ) ) {
 		function () {
 
 			register(
-				[
+				array(
 					'name'     => 'ctb',
 					'label'    => __( 'ctb', 'newfold-ctb-module' ),
 					'callback' => function ( Container $container ) {
@@ -20,7 +20,7 @@ if ( function_exists( 'add_action' ) ) {
 					},
 					'isActive' => true,
 					'isHidden' => false,
-				]
+				)
 			);
 
 		}
