@@ -30,10 +30,11 @@
 	}
 
 	const loadCtb = (e) => {
-		let modal = openModal(e);
-		let modalWindow = modal.querySelector('.ctb-modal-content')
+		let ctbId = e.target.getAttribute('data-ctb-id');
+		let modal = openModal(e, ctbId);
+		let modalWindow = modal.querySelector('.ctb-modal-content');
 		window.fetch(
-			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v1/ctb/${ e.target.getAttribute('data-ctb-id') }`,
+			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v1/ctb/${ ctbId }`,
 			{
 				credentials: 'same-origin',
 				headers: {
@@ -49,19 +50,20 @@
 				modalWindow.innerHTML = data.content;
 			} else {
 				displayError(modalWindow, 'load');
-				//remove ctb attributes from button so the user can click the link
-				removeCtbAttrs(e);
 			}
 		});
 	}
 
-	const removeCtbAttrs = (e) => {
-		let ctbButton = e.target;
+	const removeCtbAttrs = () => {
+		let ctbContainer = document.getElementById('nfd-ctb-container');
+		let ctbId = ctbContainer.getAttribute('data-ctb-id');
+		let ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
 		ctbButton.removeAttribute('data-action');
 		ctbButton.removeAttribute('data-ctb-id');
+		ctbContainer.removeAttribute('data-ctb-id');
 	}
 
-	const openModal = (e) => {
+	const openModal = (e, ctbId) => {
 		let modalContent = `
 		<div class="ctb-modal">
 			<div class="ctb-modal-overlay" data-a11y-dialog-destroy></div>
@@ -80,6 +82,7 @@
 			ctbContainer.target.insertAdjacentElement('afterend', nfd-ctb-container);
 		}
 
+		ctbContainer.setAttribute('data-ctb-id', ctbId);
 		ctbmodal = new A11yDialog(ctbContainer);
 		ctbmodal.show();
 		document.querySelector('body').classList.add('noscroll');
@@ -100,10 +103,12 @@
 			<p>Sorry, we are unable to ${message} at this time.</p>
 			<button class="components-button bluehost is-primary" data-a11y-dialog-destroy>Cancel</button>
 		</div>`;
+		//remove ctb attributes from button so the user can click the link
+		removeCtbAttrs();
 	}
 
 	const dismissNotice = (ctbId) => {
-		const ctbTrigger = document.querySelector('[data-ctb-id="' + ctbId + '"]')
+		const ctbTrigger = document.querySelector('[data-ctb-id="' + ctbId + '"]');
 		const notice = ctbTrigger.closest('.bluehost-notice');
 		if (notice) {
 			notice.parentNode.removeChild(notice);
