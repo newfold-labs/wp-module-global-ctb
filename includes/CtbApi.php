@@ -73,10 +73,14 @@ class CTBApi {
 					if ( empty( $customer_data ) || ! isset( $customer_data['customer_id'] ) ) {
 						return new WP_Error( 500, 'Customer ID is required to purchase CTB' );
 					}
+					$site_id = container()->plugin()->site_id;
+					if ( empty( $site_id ) ) {
+						return new WP_Error( 500, 'Site ID is required to purchase CTB' );
+					}
 					$payload = array(
 						'ctb_id'      => $ctb_id,
 						'customer_id' => $customer_data['customer_id'],
-						'site_id'     => container()->plugin()->site_id,
+						'site_id'     => $site_id,
 					);
 
 					$response = wp_remote_post(
