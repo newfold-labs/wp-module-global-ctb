@@ -20,7 +20,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "NewfoldLabs\\WP\\Module\\Ctb\\": "includes"
+      "NewfoldLabs\\WP\\Module\\CTB\\": "includes"
     },
     "files": [
       "bootstrap.php"

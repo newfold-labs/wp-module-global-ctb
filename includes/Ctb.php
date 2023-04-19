@@ -26,7 +26,6 @@ class CTB {
 		$this->container = $container;
 
 		// Module functionality goes here
-		require_once __DIR__ . '/CtbApi.php';
 		add_action( 'rest_api_init', array( CTBApi::class, 'registerRoutes' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'ctb_scripts' ) );
 		add_action( 'admin_footer', array( $this, 'ctb_footer' ) );
