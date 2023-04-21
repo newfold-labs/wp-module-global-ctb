@@ -2,6 +2,7 @@
 namespace NewfoldLabs\WP\Module\CTB;
 
 use NewfoldLabs\WP\ModuleLoader\Container;
+use NewfoldLabs\WP\Module\CustomerBluehost\CustomerBluehost;
 use function NewfoldLabs\WP\ModuleLoader\container;
 
 /**
@@ -59,7 +60,8 @@ class CTB {
 
 		// Calculate and add admin inline values
 		$hasToken      = ! empty( get_option( 'nfd_data_token' ) );
-		$customerData  = container()->plugin()->customer;
+		// $customerData  = container()->plugin()->customer;
+		$customerData  = CustomerBluehost::collect();
 		$hasCustomerId = ! empty( $customerData ) && ! empty( $customerData['customer_id'] );
 		$supportsCTB   = $hasToken && $hasCustomerId;
 
