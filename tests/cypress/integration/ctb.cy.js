@@ -11,7 +11,7 @@ describe('Click to buy', function () {
 			url: /newfold-marketplace(\/|%2F)v1(\/|%2F)marketplace/
 		}, products ).as('products');
 
-		cy.visit('/wp-admin/admin.php?page=' + Cypress.env('pluginid') + '#/marketplace', {
+		cy.visit('/wp-admin/admin.php?page=' + Cypress.env('pluginId') + '#/marketplace', {
 			onBeforeLoad(contentWindow) {
 				let nfdctb = {
 					supportsCTB: true
