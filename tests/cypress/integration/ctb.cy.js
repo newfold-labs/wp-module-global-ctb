@@ -32,7 +32,7 @@ describe('Click to buy', function () {
 			.scrollIntoView()
 			.should('exist')
 			.should('be.visible');
-		cy.get('.yst-button--primary[data-action="load-nfd-ctb"]')
+		cy.get('.nfd-button--primary[data-action="load-nfd-ctb"]')
 			.should('have.attr', 'data-ctb-id')
 			.and('equal', '57d6a568-783c-45e2-a388-847cff155897');
 	});
