@@ -1,8 +1,8 @@
 <?php
-namespace NewfoldLabs\WP\Module\CTB;
+namespace NewfoldLabs\WP\Module\GlobalCTB;
 
 use NewfoldLabs\WP\ModuleLoader\Container;
-use NewfoldLabs\WP\Module\CustomerBluehost\CustomerBluehost;
+use NewfoldLabs\WP\Module\Data\SiteCapabilities;
 use function NewfoldLabs\WP\ModuleLoader\container;
 
 /**
@@ -38,7 +38,7 @@ class CTB {
 	 * @return void
 	 */
 	public function ctb_scripts() {
-		$assetsDir = container()->plugin()->url . 'vendor/newfold-labs/wp-module-ctb/includes/assets/';
+		$assetsDir = container()->plugin()->url . 'vendor/newfold-labs/wp-module-global-ctb/includes/assets/';
 
 		// load the a11y dialog lib
 		wp_register_script(
@@ -51,32 +51,29 @@ class CTB {
 
 		// load ctb script
 		wp_enqueue_script(
-			'newfold-ctb',
+			'newfold-global-ctb',
 			$assetsDir . 'ctb.js',
 			array( 'a11y-dialog' ),
 			container()->plugin()->version,
 			true
 		);
 
-		// Calculate and add admin inline values
-		$hasToken      = ! empty( get_option( 'nfd_data_token' ) );
-		// $customerData  = container()->plugin()->customer;
-		$customerData  = CustomerBluehost::collect();
-		$hasCustomerId = ! empty( $customerData ) && ! empty( $customerData['customer_id'] );
-		$supportsCTB   = $hasToken && $hasCustomerId;
+		// Capability check for CTB support
+		$capability  = new SiteCapabilities();
+		$canCTB = $capability->get( 'canCTB' );
 
 		// Inline script for global vars for ctb
 		wp_localize_script(
-			'newfold-ctb', // script handle
-			'nfdctb',      // js object
+			'newfold-global-ctb', // script handle
+			'nfdgctb',      // js object
 			array(
-				'supportsCTB' => $supportsCTB,
+				'canCTB' => $canCTB,
 			)
 		);
 
 		// Styles
 		wp_enqueue_style(
-			'newfold-ctb-style',
+			'newfold-global-ctb-style',
 			$assetsDir . 'ctb.css',
 			array(),
 			container()->plugin()->version

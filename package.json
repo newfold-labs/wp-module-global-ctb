@@ -1,6 +1,6 @@
 {
-  "name": "@newfold-labs/wp-module-ctb",
-  "description": "Newfold module for 'Click to Buy' functionality in brand plugins",
+  "name": "@newfold-labs/wp-module-global-ctb",
+  "description": "Newfold module for Global 'Click to Buy' functionality in brand plugins",
   "license": "GPL-2.0-or-later",
   "private": true,
   "author": {
