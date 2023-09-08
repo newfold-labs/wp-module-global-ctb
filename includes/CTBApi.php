@@ -34,7 +34,7 @@ class CTBApi {
 					// Capability check for CTB support
 					$capability  = new SiteCapabilities();
 					$canCTB = $capability->get( 'canCTB' );
-					if ( !$canCTB ) {
+					if ( ! $canCTB ) {
 						return new WP_Error( 500, 'Not capable of CTB.' );
 					}
 
