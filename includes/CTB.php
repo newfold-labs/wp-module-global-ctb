@@ -59,8 +59,8 @@ class CTB {
 		);
 
 		// Capability check for CTB support
-		$capability  = new SiteCapabilities();
-		$canCTB = $capability->get( 'canCTB' );
+		$capability = new SiteCapabilities();
+		$canCTB     = $capability->get( 'canCTB' );
 
 		// Inline script for global vars for ctb
 		wp_localize_script(
@@ -88,5 +88,4 @@ class CTB {
 	public function ctb_footer() {
 		echo "<div id='nfd-ctb-container' aria-hidden='true'></div>";
 	}
-
 }
