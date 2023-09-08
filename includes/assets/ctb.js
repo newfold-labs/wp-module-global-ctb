@@ -1,40 +1,12 @@
 {
-	const purchase = (e) => {
-		let modalWindow = e.target.closest('.ctb-modal-content');
-		let ctbId = e.target.getAttribute('data-ctb-id');
-		e.target.closest('.ctb-actions').innerHTML = '<div class="ctb-loader"></div>';
-		window.fetch(
-			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v1/ctb/${ ctbId }`,
-			{
-				credentials: 'same-origin',
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-WP-Nonce': window.nfdplugin.restApiNonce,
-				},
-			}
-		)
-		.then( response => {
-			purchaseStatus = (response.status === 200);
-			return response.json();
-		}).then( data => {
-			if (data.content) {
-				modalWindow.innerHTML = data.content;
-				if (purchaseStatus){
-					dismissNotice(ctbId);
-				}
-			} else {
-				displayError(modalWindow, "purchase");
-			}
-		});
-	}
 
 	const loadCtb = (e) => {
-		let ctbId = e.target.getAttribute('data-ctb-id');
+		let ctbId = e.target.getAttribute('data-ctb');
 		let modal = openModal(e, ctbId);
 		let modalWindow = modal.querySelector('.ctb-modal-content');
+		let modalLoader = modal.querySelector('.ctb-loader');
 		window.fetch(
-			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v1/ctb/${ ctbId }`,
+			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v2/ctb/${ ctbId }`,
 			{
 				credentials: 'same-origin',
 				headers: {
@@ -47,7 +19,13 @@
 			return response.json();
 		}).then( data => {
 			if (data.content) {
-				modalWindow.innerHTML = data.content;
+				// set the content to an iframe of specified url
+				let theframe = document.createElement('iframe');
+				theframe.width = "100%";
+				theframe.height = "100%";
+				theframe.src = data.content.url;
+				// modalWindow.appendChild( theframe );
+				modalWindow.replaceChild( theframe, modalLoader );
 			} else {
 				displayError(modalWindow, 'load');
 			}
@@ -86,8 +64,6 @@
 		ctbmodal = new A11yDialog(ctbContainer);
 		ctbmodal.show();
 		document.querySelector('body').classList.add('noscroll');
-
-		purchaseStatus = false;
 		
 		return ctbContainer;
 	}
@@ -107,39 +83,17 @@
 		removeCtbAttrs();
 	}
 
-	const dismissNotice = (ctbId) => {
-		const ctbTrigger = document.querySelector('[data-ctb-id="' + ctbId + '"]');
-		const notice = ctbTrigger.closest('.bluehost-notice');
-		if (notice) {
-			notice.parentNode.removeChild(notice);
-			window.fetch(
-				`${ window.nfdplugin.restApiUrl }/newfold-notifications/v1/notifications/${ notice.dataset.id }`,
-				{
-					credentials: 'same-origin',
-					method: 'DELETE',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-WP-Nonce': window.nfdplugin.restApiNonce,
-					},
-				}
-			);
-		}
-	}
-
 	window.addEventListener(
 		'load',
 		() => {
 			document.getElementById('wpwrap').addEventListener('click', function(event) {
-				if (event.target.dataset.action === 'load-nfd-ctb') {
-					if ( window.nfdctb.supportsCTB ) { // has token and customer id
+				if ( event.target.dataset.ctb ) { // has ctb data attribute
+					if ( window.nfdgctb.canCTB ) { // has token and customer id
 						event.preventDefault();
 						loadCtb(event);
 					} else {
 						// do nothing, fallback to href
 					}
-				}
-				if (event.target.dataset.action === 'purchase-ctb') {
-					purchase(event);
 				}
 				if (event.target.hasAttribute('data-a11y-dialog-destroy')) {
 					closeModal(event.target);

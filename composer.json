@@ -1,5 +1,5 @@
 {
-  "name": "newfold-labs/wp-module-ctb",
+  "name": "newfold-labs/wp-module-global-ctb",
   "description": "Newfold module for 'Click to Buy' functionality in brand plugins",
   "type": "library",
   "license": "GPL-2.0-or-later",
@@ -20,7 +20,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "NewfoldLabs\\WP\\Module\\CTB\\": "includes"
+      "NewfoldLabs\\WP\\Module\\GCTB\\": "includes"
     },
     "files": [
       "bootstrap.php"
