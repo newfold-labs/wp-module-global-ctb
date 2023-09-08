@@ -60,7 +60,7 @@ class CTB {
 
 		// Capability check for CTB support
 		$capability = new SiteCapabilities();
-		$canCTB     = true; //$capability->get( 'canCTB' );
+		$canCTB     = true; // $capability->get( 'canCTB' );
 
 		// Inline script for global vars for ctb
 		wp_localize_script(
