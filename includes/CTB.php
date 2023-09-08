@@ -86,6 +86,6 @@ class CTB {
 	 * @return void
 	 */
 	public function ctb_footer() {
-		echo "<div id='nfd-ctb-container' aria-hidden='true'></div>";
+		echo "<div id='nfd-global-ctb-container' aria-hidden='true'></div>";
 	}
 }
