@@ -21,8 +21,8 @@
 			// if (data.content) {
 				// set the content to an iframe of specified url
 				let theframe = document.createElement('iframe');
-				theframe.width = "100%";
-				theframe.height = "100%";
+				// theframe.width = "100%";
+				// theframe.height = "100%";
 				// theframe.src = data.content.html;
 				theframe.src = 'https://test.hiive.cloud/ctb';
 				// modalWindow.appendChild( theframe );

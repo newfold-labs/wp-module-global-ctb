@@ -8,18 +8,18 @@ body.noscroll {
 
 #nfd-global-ctb-container,
 .global-ctb-modal-overlay {
-    position: fixed;
-    top: 0;
-    right: 0;
     bottom: 0;
     left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
 }
 
 #nfd-global-ctb-container {
-    z-index: 100000;
+    align-items: center;
     display: flex;
     justify-content: center;
-    align-items: center;
+    z-index: 100000;
 }
 
 #nfd-global-ctb-container[aria-hidden='true'] {
@@ -31,24 +31,39 @@ body.noscroll {
 }
 
 .global-ctb-modal-content {
-    margin: auto;
-    padding: 1.25rem;
-    z-index: 2;
-    position: relative;
+    align-items: center;
     background-color: white;
-    /* z-index: 20001; */
-    min-width: 500px;
-    max-width: 75%;
-    min-height: 250px;
     background: white;
     color: black;
     display: flex;
+    height: 80vh;
     justify-content: center;
-    align-items: center;
+    margin: auto;
+    max-height: 80vh;
+    max-width: 80vw;
+    min-height: 80vh;
+    min-width: 80vw;
+    padding: 0;
+    position: relative;
+    z-index: 2;
 }
 
-.global-ctb-modal img {
+@media screen and (max-width: 999px) {
+    .global-ctb-modal-content {
+        max-height: 80vh;
+        max-width: 80vw;
+        min-height: 80vh;
+        min-width: 80vw;
+    }
+}
+
+.global-ctb-modal iframe {
+    height: 100%;
+    max-height: 100%;
     max-width: 100%;
+    min-height: 100%;
+    min-width:100%;
+    width: 100%;
 }
 
 
@@ -57,41 +72,41 @@ body.noscroll {
 }
 
 .global-ctb-loader {
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-    background: #3575d3;
-    background: linear-gradient(to right, #3575d3 5%, rgba(0, 0, 0, 0) 32%);
-    position: relative;
-    will-change: transform;
     -webkit-animation: globalctbloader .9s infinite linear;
     animation: globalctbloader .9s infinite linear;
+    background: #3575d3;
+    background: linear-gradient(to right, #3575d3 5%, rgba(0, 0, 0, 0) 32%);
+    border-radius: 50%;
+    height: 5rem;
+    position: relative;
     transform: translateZ(0);
+    width: 5rem;
+    will-change: transform;
 }
 
 .global-ctb-loader:before {
-    width: 50%;
-    height: 50%;
     background: #3575d3;
     border-radius: 100% 0 0 0;
+    content: "";
+    height: 50%;
+    left: 0;
     position: absolute;
     top: 0;
-    left: 0;
-    content: "";
+    width: 50%;
 }
 
 .global-ctb-loader:after {
     background: #fff;
-    width: 88%;
-    height: 88%;
     border-radius: 50%;
+    bottom: 0;
     content: "";
+    height: 88%;
+    left: 0;
     margin: auto;
     position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
     right: 0;
+    top: 0;
+    width: 88%;
 }
 
 @keyframes globalctbloader {
@@ -101,13 +116,5 @@ body.noscroll {
 
     100% {
         transform: rotate(360deg);
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .global-ctb-modal-content {
-        padding: 1.1rem;
-        min-width: 80vw;
-        max-width: 80vw;
     }
 }
