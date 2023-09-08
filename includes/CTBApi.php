@@ -2,11 +2,10 @@
 
 namespace NewFoldLabs\WP\Module\GlobalCTB;
 
-use function NewfoldLabs\WP\ModuleLoader\container;
-
 use NewfoldLabs\WP\Module\Data\HiiveConnection;
 use NewfoldLabs\WP\Module\Data\SiteCapabilities;
 use WP_Error;
+use function NewfoldLabs\WP\ModuleLoader\container;
 
 /**
  * Class CTBApi
