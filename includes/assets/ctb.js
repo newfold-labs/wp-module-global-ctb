@@ -1,7 +1,7 @@
 {
 
 	const loadCtb = (e) => {
-		let ctbId = e.target.getAttribute('data-ctb');
+		let ctbId = e.target.getAttribute('data-ctb-id');
 		let modal = openModal(e, ctbId);
 		let modalWindow = modal.querySelector('.global-ctb-modal-content');
 		let modalLoader = modal.querySelector('.global-ctb-loader');
@@ -35,10 +35,10 @@
 
 	const removeCtbAttrs = () => {
 		let ctbContainer = document.getElementById('nfd-global-ctb-container');
-		let ctbId = ctbContainer.getAttribute('data-ctb');
-		let ctbButton = document.querySelector('[data-ctb="' + ctbId + '"]');
-		ctbButton.removeAttribute('data-ctb');
-		ctbContainer.removeAttribute('data-ctb');
+		let ctbId = ctbContainer.getAttribute('data-ctb-id');
+		let ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
+		ctbButton.removeAttribute('data-ctb-id');
+		ctbContainer.removeAttribute('data-ctb-id');
 	}
 
 	const openModal = (e, ctbId) => {
@@ -60,7 +60,7 @@
 			ctbContainer.target.insertAdjacentElement('afterend', nfd-global-ctb-container);
 		}
 
-		ctbContainer.setAttribute('data-ctb', ctbId);
+		ctbContainer.setAttribute('data-ctb-id', ctbId);
 		ctbmodal = new A11yDialog(ctbContainer);
 		ctbmodal.show();
 		document.querySelector('body').classList.add('noscroll');
@@ -87,8 +87,8 @@
 		'load',
 		() => {
 			document.getElementById( 'wpwrap' ).addEventListener( 'click', function( event ) {
-				if ( event.target.dataset.ctb ) { // has ctb data attribute
-					if ( window.nfdgctb.canCTB ) { // has token and customer id
+				if ( event.target.dataset.ctbId ) { // has ctb data attribute
+					if ( window.nfdgctb.canCTB ) { // has canCTB capability
 						event.preventDefault();
 						loadCtb( event );
 					} else {
