@@ -83,18 +83,33 @@
 		removeCtbAttrs();
 	}
 
+	/**
+	 * Can access global CTB - checks corresponding NewfoldRuntime capability
+	 */
+	const supportsGlobalCTB = () => {
+		return (
+			"NewfoldRuntime" in window &&
+			"capabilities" in window.NewfoldRuntime &&
+			"canAccessGlobalCTB" in window.NewfoldRuntime.capabilities &&
+			window.NewfoldRuntime.capabilities.canAccessGlobalCTB === true
+		);
+	}
+
 	window.addEventListener(
 		'load',
 		() => {
 			document.getElementById( 'wpwrap' ).addEventListener( 'click', function( event ) {
-				if ( event.target.dataset.ctbId ) { // has ctb data attribute
-					if ( window.nfdgctb.canCTB ) { // has canCTB capability
+				// has ctb data attribute
+				if ( event.target.dataset.ctbId ) {
+					// can access global ctb 
+					if ( supportsGlobalCTB() ) {
 						event.preventDefault();
 						loadCtb( event );
 					} else {
 						// do nothing, fallback to href
 					}
 				}
+				// close button
 				if ( event.target.hasAttribute( 'data-a11y-dialog-destroy' ) ) {
 					closeModal( event.target );
 				}
