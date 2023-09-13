@@ -33,7 +33,7 @@ class CTBApi {
 					// Capability check for CTB support
 					$capability  = new SiteCapabilities();
 					if ( ! $capability->get( 'canAccessGlobalCTB' ) ) {
-						return new WP_Error( 500, 'Not capable of CTB.' );
+						return new WP_Error( 500, 'Not able to access global CTBs.' );
 					}
 
 					$response = wp_remote_get(
