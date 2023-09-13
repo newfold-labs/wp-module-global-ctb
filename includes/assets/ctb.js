@@ -18,18 +18,23 @@
 		.then( response => {
 			return response.json();
 		}).then( data => {
-			// if (data.content) {
+			if (
+				"content" in data &&
+				"url" in data.content
+			) {
 				// set the content to an iframe of specified url
 				let theframe = document.createElement('iframe');
-				// theframe.width = "100%";
-				// theframe.height = "100%";
-				// theframe.src = data.content.html;
-				theframe.src = 'https://test.hiive.cloud/ctb';
-				// modalWindow.appendChild( theframe );
+				theframe.src = data.content.url;
 				modalWindow.replaceChild( theframe, modalLoader );
-			// } else {
-			// 	displayError(modalWindow, 'load');
-			// }
+			} else {
+				// displayError(modalWindow, 'load');
+
+				// @TODO remove -  in place for for testing/development only!
+				let theframe = document.createElement('iframe');
+				theframe.src = 'https://test.hiive.cloud/ctb';
+				modalWindow.replaceChild( theframe, modalLoader );
+
+			}
 		});
 	}
 
