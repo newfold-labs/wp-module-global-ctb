@@ -6,12 +6,12 @@
 		let modalWindow = modal.querySelector('.global-ctb-modal-content');
 		let modalLoader = modal.querySelector('.global-ctb-loader');
 		window.fetch(
-			`${ window.nfdplugin.restApiUrl }/newfold-ctb/v2/ctb/${ ctbId }`,
+			`${ window.NewfoldRuntime.restUrl }/newfold-ctb/v2/ctb/${ ctbId }`,
 			{
 				credentials: 'same-origin',
 				headers: {
 					'Content-Type': 'application/json',
-					'X-WP-Nonce': window.nfdplugin.restApiNonce,
+					'X-WP-Nonce': window.NewfoldRuntime.restNonce,
 				},
 			}
 		)
