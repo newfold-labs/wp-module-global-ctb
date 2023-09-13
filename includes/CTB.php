@@ -2,7 +2,6 @@
 namespace NewfoldLabs\WP\Module\GlobalCTB;
 
 use NewfoldLabs\WP\ModuleLoader\Container;
-use NewfoldLabs\WP\Module\Data\SiteCapabilities;
 use function NewfoldLabs\WP\ModuleLoader\container;
 
 /**
@@ -56,19 +55,6 @@ class CTB {
 			array( 'a11y-dialog' ),
 			container()->plugin()->version,
 			true
-		);
-
-		// Capability check for CTB support
-		$capability = new SiteCapabilities();
-		$canCTB     = true; // $capability->get( 'canCTB' );
-
-		// Inline script for global vars for ctb
-		wp_localize_script(
-			'newfold-global-ctb', // script handle
-			'nfdgctb',      // js object
-			array(
-				'canCTB' => $canCTB,
-			)
 		);
 
 		// Styles
