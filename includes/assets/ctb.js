@@ -51,6 +51,7 @@
 		<div class="global-ctb-modal">
 			<div class="global-ctb-modal-overlay" data-a11y-dialog-destroy></div>
 			<div role="document" class="global-ctb-modal-content">
+				<div class="global-ctb-modal-close" data-a11y-dialog-destroy>x</div>
 				<div class="global-ctb-loader"></div>
 			</div>
 		</div>
