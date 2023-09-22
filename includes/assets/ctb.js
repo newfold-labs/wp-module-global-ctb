@@ -3,9 +3,6 @@
     const loadCtb = (e) => {
         const ctbId = e.target.getAttribute('data-ctb-id');
         const destinationUrl = e.target.getAttribute('href');
-        const modal = openModal(e, ctbId);
-        const modalWindow = modal.querySelector('.global-ctb-modal-content');
-        const modalLoader = modal.querySelector('.global-ctb-loader');
         window.fetch(
             `${window.NewfoldRuntime.restUrl}/newfold-ctb/v2/ctb/${ctbId}`,
             {
@@ -24,6 +21,10 @@
                 }
             })
             .then(data => {
+                //open modal
+                const modal = openModal(e, ctbId);
+                const modalWindow = modal.querySelector('.global-ctb-modal-content');
+                const modalLoader = modal.querySelector('.global-ctb-loader');
                 // set the content to an iframe of specified url
                 let iframe = document.createElement('iframe');
                 iframe.src = data.url;
@@ -31,7 +32,6 @@
             })
             .catch(error => {
                 window.open(destinationUrl, '_blank', 'noopener noreferrer');
-                closeModal();
             });
     }
 
