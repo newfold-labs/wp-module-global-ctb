@@ -64,6 +64,10 @@
 
     // walk up the dom to find context of button
     const determineContext = (e) => {
+        // but first check for a ctb-context attribute on target
+        if ( e.target.hasAttribute('data-ctb-context') ) {
+            return e.target.getAttribute('data-ctb-context');
+        }
         // if target has marketplace parent set context to marketplace
         if ( e.target.closest('.marketplace-item') ) {
             return 'marketplace-item';
