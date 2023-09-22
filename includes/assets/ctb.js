@@ -68,19 +68,19 @@
         if ( e.target.hasAttribute('data-ctb-context') ) {
             return e.target.getAttribute('data-ctb-context');
         }
-        // if target has marketplace parent set context to marketplace
+        // if target has marketplace-item parent
         if ( e.target.closest('.marketplace-item') ) {
             return 'marketplace-item';
         }
-        // if target has notification parent set context to notification
+        // if target has notification parent
         if ( e.target.closest( '.newfold-notifications-wrapper' ) ) {
             return 'notification';
         }
+        // TODO - add context check for ecommerce ctb
         // if target has app root parent (from ui library)
         if ( e.target.closest( '.nfd-root' ) ) {
             return 'plugin-app';
         }
-        // TODO - add context check for ecommerce ctb
         // TODO - add context check for yoast plugin ctb
         // if outside plugin app
         return 'external';
