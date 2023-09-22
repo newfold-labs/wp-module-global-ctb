@@ -57,6 +57,16 @@ class CTB {
 			true
 		);
 
+		// Inline script for global vars for ctb
+		wp_localize_script(
+			'newfold-global-ctb', // script handle
+			'nfdgctb', // js object
+			array(
+				'eventendpoint' => \esc_url_raw( \get_home_url() . '/index.php?rest_route=/newfold-data/v1/events/' ),
+				'brand' => container()->plugin()->brand
+			)
+		);
+
 		// Styles
 		wp_enqueue_style(
 			'newfold-global-ctb-style',
