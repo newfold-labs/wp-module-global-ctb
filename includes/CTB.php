@@ -63,7 +63,7 @@ class CTB {
 			'nfdgctb', // js object
 			array(
 				'eventendpoint' => \esc_url_raw( \get_home_url() . '/index.php?rest_route=/newfold-data/v1/events/' ),
-				'brand' => container()->plugin()->brand
+				'brand'         => container()->plugin()->brand,
 			)
 		);
 
