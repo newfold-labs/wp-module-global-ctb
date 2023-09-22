@@ -30,12 +30,6 @@ class CTBApi {
 				},
 				'callback'            => function ( \WP_REST_Request $request ) {
 
-					// Capability check for CTB support
-					$capability  = new SiteCapabilities();
-					if ( ! $capability->get( 'canAccessGlobalCTB' ) ) {
-						return new WP_Error( 500, 'Not able to access global CTBs.' );
-					}
-
 					$response = wp_remote_get(
 						NFD_HIIVE_URL . '/sites/v2/ctb/' . $request->get_param( 'id' ) . '',
 						array(

@@ -3,9 +3,15 @@
     const loadCtb = (e) => {
         const ctbId = e.target.getAttribute('data-ctb-id');
         const destinationUrl = e.target.getAttribute('href');
+        disableLink(ctbId);
+        //open modal
         const modal = openModal(e, ctbId);
         const modalWindow = modal.querySelector('.global-ctb-modal-content');
         const modalLoader = modal.querySelector('.global-ctb-loader');
+        //track click
+        ctbClickEvent(e, ctbId);
+
+        // handle click to receive ctb iframe url
         window.fetch(
             `${window.NewfoldRuntime.restUrl}/newfold-ctb/v2/ctb/${ctbId}`,
             {
@@ -17,6 +23,7 @@
             }
         )
             .then(response => {
+                enableLink(ctbId);
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -30,17 +37,74 @@
                 modalWindow.replaceChild(iframe, modalLoader);
             })
             .catch(error => {
-                window.open(destinationUrl, '_blank', 'noopener noreferrer');
+                displayError(modalWindow, error); 
+                // dont display error, just close modal and open fallback link
                 closeModal();
+                removeCtbAttrs(ctbId);
+                window.open(destinationUrl, '_blank', 'noopener noreferrer');
             });
     }
 
-    const removeCtbAttrs = () => {
-        let ctbContainer = document.getElementById('nfd-global-ctb-container');
-        let ctbId = ctbContainer.getAttribute('data-ctb-id');
-        let ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
-        ctbButton.removeAttribute('data-ctb-id');
-        ctbContainer.removeAttribute('data-ctb-id');
+    const ctbClickEvent = (e, ctbId) => {
+        window.wp.apiFetch({
+			url: window.nfdgctb.eventendpoint,
+			method: 'POST', 
+			data: {
+                action: 'launched_modal',
+                data: {
+                    label: e.target.innerText,
+                    ctbId: ctbId,
+                    brand: window.nfdgctb.brand,
+                    context: determineContext(e),
+                    page: window.location.href
+                }
+            }
+		});
+    }    
+
+    // walk up the dom to find context of button
+    const determineContext = (e) => {
+        // but first check for a ctb-context attribute on target
+        if ( e.target.hasAttribute('data-ctb-context') ) {
+            return e.target.getAttribute('data-ctb-context');
+        }
+        // if target has marketplace-item parent
+        if ( e.target.closest('.marketplace-item') ) {
+            return 'marketplace-item';
+        }
+        // if target has notification parent
+        if ( e.target.closest( '.newfold-notifications-wrapper' ) ) {
+            return 'notification';
+        }
+        // TODO - add context check for ecommerce ctb
+        // if target has app root parent (from ui library)
+        if ( e.target.closest( '.nfd-root' ) ) {
+            return 'plugin-app';
+        }
+        // TODO - add context check for yoast plugin ctb
+        // if outside plugin app
+        return 'external';
+    }
+
+    // disable link
+    const disableLink = ( ctbId ) => {
+        const ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
+        ctbButton.setAttribute('disabled', 'true');
+    }
+
+    // reenable link
+    const enableLink = ( ctbId ) => {
+        const ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
+        ctbButton.removeAttribute('disabled');
+    }
+
+    // Remove attributes to avoid continued errors
+    const removeCtbAttrs = ( ctbId ) => {
+        const ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
+        if ( ctbButton ) {
+            ctbButton.removeAttribute('data-ctb-id');
+            ctbButton.removeAttribute('data-action');
+        }
     }
 
     const openModal = (e, ctbId) => {
@@ -71,7 +135,7 @@
         return ctbContainer;
     }
 
-    const closeModal = (e) => {
+    const closeModal = () => {
         ctbmodal.destroy();
         document.querySelector('body').classList.remove('noscroll');
     }
@@ -79,6 +143,7 @@
     const displayError = (modalWindow, error) => {
         let message = (error === 'purchase') ? 'complete the transaction' : 'load the product information';
         modalWindow.innerHTML = `<div style="text-align:center;">
+            <h3>${error}</h3>
 			<p>Sorry, we are unable to ${message} at this time.</p>
 			<button class="components-button bluehost is-primary" data-a11y-dialog-destroy>Cancel</button>
 		</div>`;
@@ -102,8 +167,8 @@
         'load',
         () => {
             document.getElementById('wpwrap').addEventListener('click', function (event) {
-                // has ctb data attribute
-                if (event.target.dataset.ctbId) {
+                // has ctb data attribute and is not disabled
+                if (event.target.dataset.ctbId && event.target.getAttribute('disabled') !== 'true') {
                     // can access global ctb
                     if (supportsGlobalCTB()) {
                         event.preventDefault();
