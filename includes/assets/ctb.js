@@ -31,6 +31,7 @@
                 modalWindow.replaceChild(iframe, modalLoader);
             })
             .catch(error => {
+                // displayError(modalWindow, error);
                 window.open(destinationUrl, '_blank', 'noopener noreferrer');
             });
     }
@@ -79,6 +80,7 @@
     const displayError = (modalWindow, error) => {
         let message = (error === 'purchase') ? 'complete the transaction' : 'load the product information';
         modalWindow.innerHTML = `<div style="text-align:center;">
+            <h3>${error}</h3>
 			<p>Sorry, we are unable to ${message} at this time.</p>
 			<button class="components-button bluehost is-primary" data-a11y-dialog-destroy>Cancel</button>
 		</div>`;
