@@ -4,6 +4,14 @@
         const ctbId = e.target.getAttribute('data-ctb-id');
         const destinationUrl = e.target.getAttribute('href');
         disableLink(ctbId);
+        //open modal
+        const modal = openModal(e, ctbId);
+        const modalWindow = modal.querySelector('.global-ctb-modal-content');
+        const modalLoader = modal.querySelector('.global-ctb-loader');
+        //track click
+        ctbClickEvent(e, ctbId);
+
+        // handle click to receive ctb iframe url
         window.fetch(
             `${window.NewfoldRuntime.restUrl}/newfold-ctb/v2/ctb/${ctbId}`,
             {
@@ -23,20 +31,55 @@
                 }
             })
             .then(data => {
-                //open modal
-                const modal = openModal(e, ctbId);
-                const modalWindow = modal.querySelector('.global-ctb-modal-content');
-                const modalLoader = modal.querySelector('.global-ctb-loader');
                 // set the content to an iframe of specified url
                 let iframe = document.createElement('iframe');
                 iframe.src = data.url;
                 modalWindow.replaceChild(iframe, modalLoader);
             })
             .catch(error => {
-                // displayError(modalWindow, error);
+                displayError(modalWindow, error); 
+                // dont display error, just close modal and open fallback link
+                closeModal();
                 removeCtbAttrs(ctbId);
                 window.open(destinationUrl, '_blank', 'noopener noreferrer');
             });
+    }
+
+    const ctbClickEvent = (e, ctbId) => {
+        window.wp.apiFetch({
+			url: window.nfdgctb.eventendpoint,
+			method: 'POST', 
+			data: {
+                action: 'launched_modal',
+                data: {
+                    label: e.target.innerText,
+                    ctbId: ctbId,
+                    brand: window.nfdgctb.brand,
+                    context: determineContext(e),
+                    page: window.location.href
+                }
+            }
+		});
+    }    
+
+    // walk up the dom to find context of button
+    const determineContext = (e) => {
+        // if target has marketplace parent set context to marketplace
+        if ( e.target.closest('.marketplace-item') ) {
+            return 'marketplace-item';
+        }
+        // if target has notification parent set context to notification
+        if ( e.target.closest( '.newfold-notifications-wrapper' ) ) {
+            return 'notification';
+        }
+        // if target has app root parent (from ui library)
+        if ( e.target.closest( '.nfd-root' ) ) {
+            return 'plugin-app';
+        }
+        // TODO - add context check for ecommerce ctb
+        // TODO - add context check for yoast plugin ctb
+        // if outside plugin app
+        return 'external';
     }
 
     // disable link
@@ -88,7 +131,7 @@
         return ctbContainer;
     }
 
-    const closeModal = (e) => {
+    const closeModal = () => {
         ctbmodal.destroy();
         document.querySelector('body').classList.remove('noscroll');
     }
