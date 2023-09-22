@@ -3,6 +3,7 @@
     const loadCtb = (e) => {
         const ctbId = e.target.getAttribute('data-ctb-id');
         const destinationUrl = e.target.getAttribute('href');
+        disableLink(ctbId);
         window.fetch(
             `${window.NewfoldRuntime.restUrl}/newfold-ctb/v2/ctb/${ctbId}`,
             {
@@ -14,6 +15,7 @@
             }
         )
             .then(response => {
+                enableLink(ctbId);
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -32,16 +34,30 @@
             })
             .catch(error => {
                 // displayError(modalWindow, error);
+                removeCtbAttrs(ctbId);
                 window.open(destinationUrl, '_blank', 'noopener noreferrer');
             });
     }
 
-    const removeCtbAttrs = () => {
-        let ctbContainer = document.getElementById('nfd-global-ctb-container');
-        let ctbId = ctbContainer.getAttribute('data-ctb-id');
-        let ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
-        ctbButton.removeAttribute('data-ctb-id');
-        ctbContainer.removeAttribute('data-ctb-id');
+    // disable link
+    const disableLink = ( ctbId ) => {
+        const ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
+        ctbButton.setAttribute('disabled', 'true');
+    }
+
+    // reenable link
+    const enableLink = ( ctbId ) => {
+        const ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
+        ctbButton.removeAttribute('disabled');
+    }
+
+    // Remove attributes to avoid continued errors
+    const removeCtbAttrs = ( ctbId ) => {
+        const ctbButton = document.querySelector('[data-ctb-id="' + ctbId + '"]');
+        if ( ctbButton ) {
+            ctbButton.removeAttribute('data-ctb-id');
+            ctbButton.removeAttribute('data-action');
+        }
     }
 
     const openModal = (e, ctbId) => {
@@ -104,8 +120,8 @@
         'load',
         () => {
             document.getElementById('wpwrap').addEventListener('click', function (event) {
-                // has ctb data attribute
-                if (event.target.dataset.ctbId) {
+                // has ctb data attribute and is not disabled
+                if (event.target.dataset.ctbId && event.target.getAttribute('disabled') !== 'true') {
                     // can access global ctb
                     if (supportsGlobalCTB()) {
                         event.preventDefault();
