@@ -37,7 +37,7 @@
                 modalWindow.replaceChild(iframe, modalLoader);
             })
             .catch(error => {
-                displayError(modalWindow, error); 
+                displayError(modalWindow, error);
                 // dont display error, just close modal and open fallback link
                 closeModal();
                 removeCtbAttrs(ctbId);

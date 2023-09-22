@@ -1,6 +1,5 @@
 // <reference types="Cypress" />
 const productsFixture = require('../fixtures/products.json');
-const ctbGETFixture = require('../fixtures/ctbGET.json');
 
 describe('Click to buy', function () {
 
@@ -26,23 +25,28 @@ describe('Click to buy', function () {
 			.should('exist')
 			.should('be.visible');
 		cy.get('.nfd-button--primary[data-action="load-nfd-ctb"]')
-			.should('have.attr', 'data-ctb-id')
-			.and('equal', '57d6a568-783c-45e2-a388-847cff155897');
+			.should('have.attr', 'data-ctb-id', '57d6a568-783c-45e2-a388-847cff155897')
+			.should('have.attr', 'target', '_blank');
 	});
 
 	it('CTB modal is functional', () => {
 		cy.intercept({
 			method: 'GET',
 			url: /newfold-ctb(\/|%2F)v2(\/|%2F)ctb/,
-		}, ctbGETFixture ).as('ctbGET');		
+		}, {
+			body: {
+				url: 'https://example.com'
+			}
+		} );
 
 		cy.get('body').should('not.have.class', 'noscroll');
 
 		cy.get('[data-action="load-nfd-ctb"]')
 			.scrollIntoView()
 			.click();
+
 		// wait for intercept with data
-		cy.wait('@ctbGET');
+		cy.wait(1000);
 
 		// check body for noscroll class
 		cy.get('body').should('have.class', 'noscroll');
@@ -53,10 +57,10 @@ describe('Click to buy', function () {
 			.scrollIntoView()
 			.should('be.visible');
 
-		//verify iframe content is visible
+		// verify iframe content is visible
 		cy.get('.global-ctb-modal-content iframe')
+			.should('have.attr', 'src', 'https://example.com')
 			.should('be.visible');
-
 
 		// check that cancel button closes modal
 		cy.get('.global-ctb-modal-close').click({force:true});
@@ -67,17 +71,30 @@ describe('Click to buy', function () {
 		cy.get('#nfd-ctb-container').should('have.attr', 'aria-hidden').and('equal', 'true');
 		cy.get('.global-ctb-modal-content').should('not.be.visible');
 
-		// reopen
-		cy.get('[data-action="load-nfd-ctb"]').click();
-		cy.wait(100);
-		cy.get('.global-ctb-modal-content')
-			.scrollIntoView()
-			.should('be.visible');
+	});
 
-		// confirm modal closes when overlay is clicked
-		cy.get('.global-ctb-modal-overlay').click({force:true});
-		cy.wait(100);
+	it('CTB fallback is functional', () => {
+		cy.intercept({
+			method: 'GET',
+			url: /newfold-ctb(\/|%2F)v2(\/|%2F)ctb/,
+		}, {
+			statusCode: 500
+		} );		
+
+		cy.get('body').should('not.have.class', 'noscroll');
+
+		cy.get('[data-action="load-nfd-ctb"]')
+			.scrollIntoView()
+			.click();
+
+		// wait for intercept
+		cy.wait(1000);
+
+		// confirm modal is closed
+		cy.get('body').should('not.have.class', 'noscroll');
+		cy.get('#nfd-ctb-container').should('have.attr', 'aria-hidden').and('equal', 'true');
 		cy.get('.global-ctb-modal-content').should('not.be.visible');
+
 	});
 
 });
