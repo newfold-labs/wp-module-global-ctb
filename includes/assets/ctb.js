@@ -50,7 +50,7 @@
 			url: window.nfdgctb.eventendpoint,
 			method: 'POST', 
 			data: {
-                action: 'launched_modal',
+                action: 'ctb_modal_opened',
                 data: {
                     label: e.target.innerText,
                     ctbId: ctbId,
