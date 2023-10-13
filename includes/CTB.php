@@ -37,7 +37,7 @@ class CTB {
 	 * @return void
 	 */
 	public function ctb_scripts() {
-		$assetsDir = container()->plugin()->url . 'vendor/newfold-labs/wp-module-global-ctb/includes/assets/';
+		$assetsDir = container()->plugin()->url . 'vendor/newfold-labs/wp-module-global-ctb/static/';
 
 		// load the a11y dialog lib
 		wp_register_script(
