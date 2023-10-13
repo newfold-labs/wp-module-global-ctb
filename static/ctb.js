@@ -13,7 +13,7 @@
 
         // handle click to receive ctb iframe url
         window.fetch(
-            `${window.NewfoldRuntime.restUrl}/newfold-ctb/v2/ctb/${ctbId}`,
+            `${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/${ctbId}`,
             {
                 credentials: 'same-origin',
                 headers: {
