@@ -54,11 +54,11 @@
 			data: {
                 action: 'ctb_modal_opened',
                 data: {
-                    label: e.target.innerText,
-                    ctbId: ctbId,
-                    brand: window.nfdgctb.brand,
-                    context: determineContext(e),
-                    page: window.location.href
+                    'label_key': 'ctb_id',
+                    'ctb_id': ctbId,
+                    'brand': window.nfdgctb.brand,
+                    'context': determineContext(e),
+                    'page': window.location.href
                 }
             }
 		});
