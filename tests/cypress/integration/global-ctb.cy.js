@@ -52,7 +52,7 @@ describe('Click to buy', function () {
 		cy.get('body').should('have.class', 'noscroll');
 
 		// check for modal should be.visible
-		cy.get('#nfd-ctb-container').should('exist');
+		cy.get('#nfd-global-ctb-container').should('exist');
 		cy.get('.global-ctb-modal-content')
 			.scrollIntoView()
 			.should('be.visible');
@@ -68,7 +68,7 @@ describe('Click to buy', function () {
 
 		// confirm modal is closed
 		cy.get('body').should('not.have.class', 'noscroll');
-		cy.get('#nfd-ctb-container').should('have.attr', 'aria-hidden').and('equal', 'true');
+		cy.get('#nfd-global-ctb-container').should('have.attr', 'aria-hidden').and('equal', 'true');
 		cy.get('.global-ctb-modal-content').should('not.be.visible');
 
 	});
@@ -92,7 +92,7 @@ describe('Click to buy', function () {
 
 		// confirm modal is closed
 		cy.get('body').should('not.have.class', 'noscroll');
-		cy.get('#nfd-ctb-container').should('have.attr', 'aria-hidden').and('equal', 'true');
+		cy.get('#nfd-global-ctb-container').should('have.attr', 'aria-hidden').and('equal', 'true');
 		cy.get('.global-ctb-modal-content').should('not.be.visible');
 
 	});
