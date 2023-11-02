@@ -52,7 +52,7 @@ class CTB {
 		wp_enqueue_script(
 			'newfold-global-ctb',
 			$assetsDir . 'ctb.js',
-			array( 'a11y-dialog', 'nfd-runtime' ),
+			array( 'a11y-dialog', 'wp-api-fetch', 'nfd-runtime' ),
 			container()->plugin()->version,
 			true
 		);
