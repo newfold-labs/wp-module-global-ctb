@@ -1,5 +1,5 @@
 // <reference types="Cypress" />
-const productsFixture = require( '../fixtures/products.json' );
+const global_ctb_products = require( '../fixtures/global-ctb-products.json' );
 
 describe( 'Click to buy', function () {
 	before( () => {
@@ -9,8 +9,8 @@ describe( 'Click to buy', function () {
 				method: 'GET',
 				url: /newfold-marketplace(\/|%2F)v1(\/|%2F)marketplace/,
 			},
-			productsFixture
-		).as( 'marketplace' );
+			global_ctb_products
+		).as( 'global_ctb_products' );
 
 		cy.visit(
 			'/wp-admin/admin.php?page=' +
@@ -25,6 +25,7 @@ describe( 'Click to buy', function () {
 				},
 			}
 		);
+
 	} );
 
 	it( 'Button has CTB Attributes', () => {
