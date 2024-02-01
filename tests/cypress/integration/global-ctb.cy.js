@@ -19,6 +19,7 @@ describe( 'Click to buy', function () {
 			{
 				onBeforeLoad() {
 					cy.window().then( ( win ) => {
+						win.nfdctb.supportsCTB = false;
 						win.NewfoldRuntime.capabilities.canAccessGlobalCTB = true;
 					} );
 				},
