@@ -28,6 +28,12 @@ describe( 'Click to buy', function () {
 	} );
 
 	it( 'Button has CTB Attributes', () => {
+		cy.window().then(
+			(win)=>{
+				cy.log('NewfoldRuntime.capabilities.canAccessGlobalCTB:', win.NewfoldRuntime.capabilities.canAccessGlobalCTB)
+			}
+		);
+
 		cy.get( '#marketplace-item-a1ff70f1-9670-4e25-a0e1-a068d3e43a45' )
 			.scrollIntoView()
 			.should( 'exist' )
