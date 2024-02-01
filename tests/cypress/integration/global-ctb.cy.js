@@ -3,6 +3,7 @@ const productsFixture = require( '../fixtures/products.json' );
 
 describe( 'Click to buy', function () {
 	before( () => {
+		cy.exec('npx wp-env run cli wp transient delete newfold_marketplace');
 		cy.intercept(
 			{
 				method: 'GET',
