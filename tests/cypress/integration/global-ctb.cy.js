@@ -30,7 +30,7 @@ describe( 'Click to buy', function () {
 	it( 'Button has CTB Attributes', () => {
 		cy.window().then(
 			(win)=>{
-				cy.log('NewfoldRuntime.capabilities.canAccessGlobalCTB:', win.NewfoldRuntime.capabilities.canAccessGlobalCTB)
+				cy.log(`NewfoldRuntime.capabilities.canAccessGlobalCTB: ${win.NewfoldRuntime.capabilities.canAccessGlobalCTB}`)
 			}
 		);
 
