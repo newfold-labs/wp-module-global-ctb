@@ -1,15 +1,16 @@
 // <reference types="Cypress" />
-const productsFixture = require( '../fixtures/products.json' );
+const global_ctb_products = require( '../fixtures/global-ctb-products.json' );
 
 describe( 'Click to buy', function () {
 	before( () => {
+		cy.exec( 'npx wp-env run cli wp transient delete newfold_marketplace' );
 		cy.intercept(
 			{
 				method: 'GET',
 				url: /newfold-marketplace(\/|%2F)v1(\/|%2F)marketplace/,
 			},
-			productsFixture
-		);
+			global_ctb_products
+		).as( 'global_ctb_products' );
 
 		cy.visit(
 			'/wp-admin/admin.php?page=' +
@@ -23,9 +24,14 @@ describe( 'Click to buy', function () {
 				},
 			}
 		);
+
 	} );
 
 	it( 'Button has CTB Attributes', () => {
+		cy.window().then( ( win ) => {
+			cy.log( `NewfoldRuntime.capabilities.canAccessGlobalCTB: ${ win.NewfoldRuntime.capabilities.canAccessGlobalCTB }` )
+		} );
+
 		cy.get( '#marketplace-item-a1ff70f1-9670-4e25-a0e1-a068d3e43a45' )
 			.scrollIntoView()
 			.should( 'exist' )

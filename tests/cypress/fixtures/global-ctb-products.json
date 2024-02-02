@@ -1,0 +1,146 @@
+{
+    "categories": {
+        "data": [
+            {
+                "name": "featured",
+                "priority": 100,
+                "styles": null,
+                "products_count": 4,
+                "title": "Featured"
+            },
+            {
+                "name": "services",
+                "priority": 10,
+                "styles": null,
+                "products_count": 14,
+                "title": "Services"
+            },
+            {
+                "name": "ecommerce",
+                "priority": 9,
+                "styles": null,
+                "products_count": 13,
+                "title": "eCommerce"
+            },
+            {
+                "name": "seo",
+                "priority": 5,
+                "styles": null,
+                "products_count": 6,
+                "title": "SEO"
+            },
+            {
+                "name": "security",
+                "priority": 3,
+                "styles": null,
+                "products_count": 1,
+                "title": "Security"
+            },
+            {
+                "name": "themes",
+                "priority": 0,
+                "styles": null,
+                "products_count": 13,
+                "title": "Themes"
+            }
+        ],
+        "links": {
+            "first": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products\/categories?brand=web&per_page=60&page=1",
+            "last": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products\/categories?brand=web&per_page=60&page=1",
+            "prev": null,
+            "next": null
+        },
+        "meta": {
+            "current_page": 1,
+            "from": 1,
+            "last_page": 1,
+            "links": [
+                {
+                    "url": null,
+                    "label": "&laquo; Previous",
+                    "active": false
+                },
+                {
+                    "url": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products\/categories?brand=web&per_page=60&page=1",
+                    "label": "1",
+                    "active": true
+                },
+                {
+                    "url": null,
+                    "label": "Next &raquo;",
+                    "active": false
+                }
+            ],
+            "path": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products\/categories",
+            "per_page": "60",
+            "to": 6,
+            "total": 6,
+            "ttl": 86400
+        }
+    },
+    "products": {
+        "data": [
+            {
+                "id": "a1ff70f1-9670-4e25-a0e1-a068d3e43a45",
+                "name": "Yoast Premium",
+                "version": null,
+                "description": "SEO made easy! Improve your ranking in search engines, boost performance and visibility, get social previews, a redirect manager, internal linking suggestions and 24\/7 premium support.",
+                "productThumbnailUrl": "https:\/\/cdn.hiive.space\/products\/thumbs\/Yoast-PRO.webp",
+                "primaryUrl": "https:\/\/yoa.st\/bh-premium?utm_source=wp-admin%2Fadmin.php&utm_medium=brand_plugin",
+                "primaryCallToAction": "Buy Now",
+                "secondaryUrl": "https:\/\/yoast.com\/wordpress\/plugins\/seo\/",
+                "secondaryCallToAction": "Learn More",
+                "clickToBuyId": "57d6a568-783c-45e2-a388-847cff155897",
+                "type": "plugin",
+                "price": "99.00",
+                "vendor_id": "03e93b44-9a95-400f-bc0b-f53c2bfa91cf",
+                "priority": 100,
+                "createdAt": "2022-10-07T15:37:39.000000Z",
+                "updatedAt": "2022-10-07T15:37:39.000000Z",
+                "categories": [
+                    "Services",
+                    "Featured",
+                    "SEO"
+                ],
+                "vendor": {
+                    "name": "Yoast",
+                    "url": "https:\/\/yoast.com\/"
+                },
+                "price_formatted": "$99.00"
+            }
+        ],
+        "links": {
+            "first": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products?brand=web&per_page=60&page=1",
+            "last": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products?brand=web&per_page=60&page=1",
+            "prev": null,
+            "next": null
+        },
+        "meta": {
+            "current_page": 1,
+            "from": 1,
+            "last_page": 1,
+            "links": [
+                {
+                    "url": null,
+                    "label": "&laquo; Previous",
+                    "active": false
+                },
+                {
+                    "url": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products?brand=web&per_page=60&page=1",
+                    "label": "1",
+                    "active": true
+                },
+                {
+                    "url": null,
+                    "label": "Next &raquo;",
+                    "active": false
+                }
+            ],
+            "path": "https:\/\/hiive.cloud\/api\/marketplace\/v1\/products",
+            "per_page": "60",
+            "to": 45,
+            "total": 45,
+            "ttl": 86400
+        }
+    }
+}
