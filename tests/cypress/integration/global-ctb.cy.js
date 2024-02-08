@@ -3,6 +3,7 @@ const global_ctb_products = require( '../fixtures/global-ctb-products.json' );
 
 describe( 'Click to buy', function () {
 	before( () => {
+		cy.visit( '/wp-admin/index.php' );
 		cy.exec( 'npx wp-env run cli wp transient delete newfold_marketplace' );
 		cy.intercept(
 			{
@@ -17,7 +18,7 @@ describe( 'Click to buy', function () {
 				Cypress.env( 'pluginId' ) +
 				'#/marketplace',
 			{
-				onBeforeLoad() {
+				onLoad() {
 					cy.window().then( ( win ) => {
 						win.NewfoldRuntime.capabilities.canAccessGlobalCTB = true;
 					} );
