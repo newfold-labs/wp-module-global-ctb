@@ -11,6 +11,18 @@ height="42" />
 
 Newfold module for 'Click to Buy' functionality in brand plugins.
 
+## Module Responsibilities
+
+- Detect clicks on elements with a `ctb-id` attribute if the user has the `canAccessGlobalCTB` capability.
+  - These elements are in the marketplace section, notification banners, and even other plugins.
+- Open a purchase modal window for the specific CTB id.
+- The purchase window shows the same CTB MFE as in the hosting account manager with integrated payment to the hosting account.
+
+## Critical Paths
+
+- A user has the `canAccessGlobalCTB` capability, a CTB link should open a CTB modal and allow purchase.
+- A user does not have the `canAccessGlobalCTB` capability, a CTB link should not open a modal but the fallback link should open a new tab.
+
 ## Installation
 
 ### 1. Add the Newfold Satis to your `composer.json`.
