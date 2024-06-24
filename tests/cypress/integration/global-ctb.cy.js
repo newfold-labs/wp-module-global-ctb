@@ -4,7 +4,7 @@ const global_ctb_products = require( '../fixtures/global-ctb-products.json' );
 describe( 'Click to buy', function () {
 	before( () => {
 		cy.visit( '/wp-admin/index.php' );
-		cy.exec( 'npx wp-env run cli wp transient delete newfold_marketplace', {failOnNonZeroExit: false} );
+		cy.exec( 'npx wp-env run cli wp transient delete newfold_marketplace' );
 		cy.intercept(
 			{
 				method: 'GET',
