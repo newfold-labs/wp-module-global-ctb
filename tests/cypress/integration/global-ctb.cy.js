@@ -4,7 +4,7 @@ const global_ctb_products = require( '../fixtures/global-ctb-products.json' );
 describe( 'Click to buy', function () {
 	before( () => {
 		cy.visit( '/wp-admin/index.php' );
-		cy.exec( 'npx wp-env run cli wp transient delete newfold_marketplace' );
+		cy.exec( 'npx wp-env run cli wp transient delete newfold_marketplace', {failOnNonZeroExit: false} );
 		cy.intercept(
 			{
 				method: 'GET',
@@ -46,7 +46,7 @@ describe( 'Click to buy', function () {
 			.should( 'have.attr', 'target', '_blank' );
 	} );
 
-	it( 'CTB modal is functional', () => {
+	it( 'CTB modal opens successfully', () => {
 		cy.intercept(
 			{
 				method: 'GET',
@@ -79,7 +79,33 @@ describe( 'Click to buy', function () {
 		cy.get( '.global-ctb-modal-content iframe' )
 			.should( 'have.attr', 'src', 'https://example.com' )
 			.should( 'be.visible' );
+	} );
 
+	it( 'CTB iframe dynamic sizing works', () => {
+		// Mock the 'frameWidth' and 'frameHeight' message events
+		cy.window().then( ( win ) => {
+			// 'frameWidth' event
+			const widthEvent = new MessageEvent( 'message', {
+				data: { type: 'frameWidth', width: '800px' },
+				origin: 'http://hiive.com',
+			} );
+			win.dispatchEvent( widthEvent );
+
+			// 'frameHeight' event
+			const heightEvent = new MessageEvent( 'message', {
+				data: { type: 'frameHeight', height: '600px' },
+				origin: 'http://hiive.com',
+			} );
+			win.dispatchEvent( heightEvent );
+		} );
+
+		// check iframe width and height
+		cy.get( '.global-ctb-modal-content iframe' )
+			.should( 'have.css', 'width', '800px' )
+			.and( 'have.css', 'height', '600px' );
+	} );
+
+	it( 'X button closes CTB modal', () => {
 		// check that cancel button closes modal
 		cy.get( '.global-ctb-modal-close' ).click( { force: true } );
 		cy.wait( 200 );
