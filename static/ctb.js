@@ -191,6 +191,19 @@
         if (!event.origin.includes('hiive')) {
             return;
         }
+        if (event.data.type === 'frameWidth') {
+            // set iframe width
+            const iframe = document.querySelector('.global-ctb-modal-content iframe');
+            iframe.style.width = event.data.width;
+
+            // request iframe height
+            iframe.contentWindow.postMessage({ type: 'getFrameHeight' }, '*');
+        }
+        if (event.data.type === 'frameHeight') {
+            // set iframe height
+            const iframe = document.querySelector('.global-ctb-modal-content iframe');
+            iframe.style.height = event.data.height;
+        }
         if (event.data === 'closeModal') {
             closeModal();
         }
