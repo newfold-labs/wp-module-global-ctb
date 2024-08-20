@@ -37,4 +37,4 @@ Newfold module for 'Click to Buy' functionality in brand plugins.
  composer require newfold-labs/wp-module-global-ctb
  ```
 
-[More on NewFold WordPress Modules](https://github.com/newfold-labs/wp-module-loader)
+[More on Newfold WordPress Modules](https://github.com/newfold-labs/wp-module-loader)
