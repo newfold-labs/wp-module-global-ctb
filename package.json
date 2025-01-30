@@ -10,6 +10,6 @@
   "devDependencies": {
     "@testing-library/cypress": "^10.0.2",
     "cypress": "^13.17.0",
-    "cypress-axe": "^1.4.0"
+    "cypress-axe": "^1.6.0"
   }
 }
