@@ -126,7 +126,7 @@
             ctbContainer = document.createElement('div');
             ctbContainer.setAttribute('id', 'nfd-global-ctb-container');
             ctbContainer.innerHTML = modalContent;
-            ctbContainer.target.insertAdjacentElement('afterend', nfd - global - ctb - container);
+            ctbContainer.target.insertAdjacentElement('afterend', ctbContainer);
         }
 
         ctbContainer.setAttribute('data-ctb-id', ctbId);
