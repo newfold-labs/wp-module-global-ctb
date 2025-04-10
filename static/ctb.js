@@ -55,7 +55,10 @@
 
         // Create and load iframe
         const iframe = document.createElement("iframe");
-        iframe.src = data.url;
+        const locale = (
+					window.NewfoldRuntime?.sdk?.locale || 'en_us'
+				).toLowerCase();
+				iframe.src = data.url + '&locale=' + locale;
         modalWindow.replaceChild(iframe, modalLoader);
       })
       .catch((error) => {
