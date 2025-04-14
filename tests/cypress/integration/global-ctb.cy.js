@@ -85,7 +85,7 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 
 		// verify iframe src is correct
 		cy.get( '.global-ctb-modal-content iframe' )
-			.should( 'have.attr', 'src', 'https://example.com' )
+			.should( 'have.attr', 'src', 'https://example.com&locale=en' )
 			.should( 'be.visible' );
 
 		// CTB iframe dynamic sizing works
