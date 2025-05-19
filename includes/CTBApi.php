@@ -44,7 +44,7 @@ class CTBApi {
 					if ( $response instanceof WP_Error ) {
 						return $response;
 					}
-					
+
 					return new \WP_REST_Response( json_decode( wp_remote_retrieve_body( $response ) ), wp_remote_retrieve_response_code( $response ) );
 				},
 			)
