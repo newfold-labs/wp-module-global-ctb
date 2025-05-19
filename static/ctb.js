@@ -4,6 +4,7 @@
  */
 (function () {
   let ctbmodal;
+  let urlToken;
 
   // -------------------------------------------------------------------------
   // Core CTB functionality
@@ -18,7 +19,6 @@
     const ctbElement = e.target.closest("[data-ctb-id]");
     const ctbId = ctbElement.getAttribute("data-ctb-id");
     const destinationUrl = ctbElement.getAttribute("href");
-
     // Disable element during loading
     ctbElement.setAttribute("disabled", "true");
 
@@ -27,54 +27,76 @@
     const modalWindow = modal.querySelector(".global-ctb-modal-content");
     const modalLoader = modal.querySelector(".global-ctb-loader");
 
-    // Track click event
-    ctbClickEvent(e, ctbId);
-
-    // Fetch CTB iframe URL from API
-    window
-      .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/${ctbId}`, {
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-WP-Nonce": window.NewfoldRuntime.restNonce
-        }
-      })
-      .then((response) => {
-        // Re-enable element
+    if( urlToken && ctbId ) {
         ctbElement.removeAttribute("disabled");
-
-        if (response.ok) {
-          return response.json();
-        }
-        throw Error(response.statusText);
-      })
-      .then((data) => {
         // Show close button
         modalWindow.querySelector(".global-ctb-modal-close").style.display =
-          "flex";
-
+            "flex";
         // Create and load iframe
-        const iframe = document.createElement("iframe");
         const locale = (
-          window.NewfoldRuntime?.sdk?.locale || 'en_US'
+            window.NewfoldRuntime?.sdk?.locale || 'en_US'
         )
-
-				iframe.src = data.url + '&locale=' + locale;
+        let url = new URL(urlToken);
+        url.searchParams.set('id', ctbId);
+        let iframeURL = url.toString();
+        const iframe = document.createElement("iframe");
+        iframe.src = iframeURL +'&locale=' + locale;
         modalWindow.replaceChild(iframe, modalLoader);
-      })
-      .catch((error) => {
-        displayError(modalWindow, error, ctbElement);
-        closeModal();
+        ctbClickEvent(e, ctbId);
 
-        // Remove CTB attributes from element
-        if (ctbElement) {
-          ctbElement.removeAttribute("data-ctb-id");
-          ctbElement.removeAttribute("data-action");
-        }
+    }  else {
+        // Fetch CTB iframe URL from API
+        window
+            .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/${ctbId}`, {
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-WP-Nonce": window.NewfoldRuntime.restNonce
+                }
+            })
+            .then((response) => {
+                // Re-enable element
+                ctbElement.removeAttribute("disabled");
 
-        // Fall back to opening destination URL
-        window.open(destinationUrl, "_blank", "noopener noreferrer");
-      });
+                if (response.ok) {
+                    return response.json();
+                }
+                throw Error(response.statusText);
+            })
+            .then((data) => {
+
+                // Show close button
+                modalWindow.querySelector(".global-ctb-modal-close").style.display =
+                    "flex";
+
+                // Create and load iframe
+                const iframe = document.createElement("iframe");
+                const locale = (
+                    window.NewfoldRuntime?.sdk?.locale || 'en_US'
+                )
+                iframe.src = data.url + '&locale=' + locale;
+                modalWindow.replaceChild(iframe, modalLoader);
+                // track click event
+                ctbClickEvent(e, ctbId);
+            })
+            .catch((error) => {
+                displayError(modalWindow, error, ctbElement);
+                closeModal();
+                // track click event
+                ctbClickEvent(e, ctbId);
+                // Remove CTB attributes from element
+                if (ctbElement) {
+                    ctbElement.removeAttribute("data-ctb-id");
+                    ctbElement.removeAttribute("data-action");
+                }
+
+                // Fall back to opening destination URL
+                window.open(destinationUrl, "_blank", "noopener noreferrer");
+            });
+    }
+
+
+
   };
 
   // -------------------------------------------------------------------------
@@ -175,7 +197,9 @@
           page: window.location.href
         }
       }
-    });
+    }).catch( ( error ) => {
+        console.error( 'Error sending event to API', error );
+    } );
   };
 
   /**
@@ -277,4 +301,40 @@
       closeModal();
     }
   });
+
+    window.addEventListener('DOMContentLoaded', function () {
+        window
+            .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/url`, {
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-WP-Nonce": window.NewfoldRuntime.restNonce
+                }
+            })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(response.statusText);
+                }
+            })
+            .then((data) => {
+                urlToken = data.url;
+            })
+            .catch((error) => {
+                console.error('Error fetching token:', error);
+            });
+    });
+
+    window.addEventListener('tokenRefreshed', (event) => {
+        const { accessToken, refreshToken } = event.detail;
+
+        if (urlToken) {
+            const url = new URL(urlToken);
+            url.searchParams.set('token', accessToken);
+            url.searchParams.set('refreshToken', refreshToken);
+            urlToken = url.toString();
+        }
+    });
+
 })();

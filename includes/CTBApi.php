@@ -29,7 +29,6 @@ class CTBApi {
 					return current_user_can( 'manage_options' );
 				},
 				'callback'            => function ( \WP_REST_Request $request ) {
-
 					$response = wp_remote_get(
 						NFD_HIIVE_URL . '/sites/v2/ctb/' . $request->get_param( 'id' ) . '',
 						array(
@@ -45,7 +44,7 @@ class CTBApi {
 					if ( $response instanceof WP_Error ) {
 						return $response;
 					}
-
+					
 					return new \WP_REST_Response( json_decode( wp_remote_retrieve_body( $response ) ), wp_remote_retrieve_response_code( $response ) );
 				},
 			)
