@@ -303,27 +303,29 @@
   });
 
     window.addEventListener('DOMContentLoaded', function () {
-        window
-            .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/url`, {
-                credentials: "same-origin",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-WP-Nonce": window.NewfoldRuntime.restNonce
-                }
-            })
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error(response.statusText);
-                }
-            })
-            .then((data) => {
-                urlToken = data.url;
-            })
-            .catch((error) => {
-                console.error('Error fetching token:', error);
-            });
+        if (supportsGlobalCTB()) {
+            window
+                .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/url`, {
+                    credentials: "same-origin",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-WP-Nonce": window.NewfoldRuntime.restNonce
+                    }
+                })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error(response.statusText);
+                    }
+                })
+                .then((data) => {
+                    urlToken = data.url;
+                })
+                .catch((error) => {
+                    console.error('Error fetching token:', error);
+                });
+        }
     });
 
     window.addEventListener('tokenRefreshed', (event) => {
