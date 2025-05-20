@@ -24,7 +24,7 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 			},
 			{
 				body: {
-					url: 'https://example.com',
+					url: 'https://example.com/',
 				},
 			}
 		).as( 'ctb' );
@@ -85,7 +85,7 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 
 		// verify iframe src is correct
 		cy.get( '.global-ctb-modal-content iframe' )
-			.should( 'have.attr', 'src', 'https://example.com&locale=en_US' )
+			.should( 'have.attr', 'src', 'https://example.com/?id=57d6a568-783c-45e2-a388-847cff155897&locale=en_US' )
 			.should( 'be.visible' );
 
 		// CTB iframe dynamic sizing works
