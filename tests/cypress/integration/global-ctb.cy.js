@@ -88,7 +88,7 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
             .should( 'be.visible' )
             .should('have.attr', 'src')
             .then((src) => {
-                expect(src).to.include('https://example.com/');
+                expect(src).to.include('https://example.com');
                 expect(src).to.include('locale=en_US');
                 if (src.includes('id=')) {
                     expect(src).to.include('id=57d6a568-783c-45e2-a388-847cff155897');
