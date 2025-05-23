@@ -324,7 +324,7 @@
         }
     });
     /**
-     * Handle iframe resize and close messages
+     * Handle token refresh messages
      */
     window.addEventListener("message", function (event) {
         // Only process messages from trusted origins
