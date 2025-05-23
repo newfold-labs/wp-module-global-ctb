@@ -256,22 +256,18 @@
    * Set up click event delegation for CTB elements
    */
   document.addEventListener("click", function (event) {
-    // Find CTB element
-    const ctbElement = event.target.closest("[data-ctb-id]");
-
-    // Handle CTB element clicks
-    if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
-      if (supportsGlobalCTB()) {
-        event.preventDefault();
-        loadCtb(event);
+      // Handle modal close button clicks
+      if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
+          closeModal();
+      } else {
+        // Check if the clicked element is a CTB element
+        const ctbElement = event.target.closest("[data-ctb-id]");
+        if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
+            // Prevent default action and load CTB
+            event.preventDefault();
+            loadCtb(event);
+        }
       }
-      // Otherwise fall back to default link behavior
-    }
-
-    // Handle modal close button clicks
-    if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
-      closeModal();
-    }
   });
 
   /**
@@ -327,15 +323,22 @@
                 });
         }
     });
-
-    window.addEventListener('tokenRefreshed', (event) => {
-        const { accessToken, refreshToken } = event.detail;
-
-        if (urlToken) {
-            const url = new URL(urlToken);
-            url.searchParams.set('token', accessToken);
-            url.searchParams.set('refreshToken', refreshToken);
-            urlToken = url.toString();
+    /**
+     * Handle iframe resize and close messages
+     */
+    window.addEventListener("message", function (event) {
+        // Only process messages from trusted origins
+        if (!event.origin.includes("hiive") ) {
+            return;
+        }
+        if( event.data.type === "tokenRefresh" ) {
+            const {accessToken, refreshToken} = event.data.data;
+            if (urlToken) {
+                const url = new URL(urlToken);
+                url.searchParams.set('token', accessToken);
+                url.searchParams.set('refreshToken', refreshToken);
+                urlToken = url.toString();
+            }
         }
     });
 
