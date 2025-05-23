@@ -228,27 +228,24 @@
   // Event listeners
   // -------------------------------------------------------------------------
 
-  /**
-   * Set up click event delegation for CTB elements
-   */
-  document.addEventListener("click", function (event) {
-    // Find CTB element
-    const ctbElement = event.target.closest("[data-ctb-id]");
-
-    // Handle CTB element clicks
-    if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
-      if (supportsGlobalCTB()) {
-        event.preventDefault();
-        loadCtb(event);
-      }
-      // Otherwise fall back to default link behavior
-    }
-
-    // Handle modal close button clicks
-    if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
-      closeModal();
-    }
-  });
+    /**
+     * Set up click event delegation for CTB elements
+     */
+    document.addEventListener("click", function (event) {
+        // Handle modal close button clicks
+        if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
+            closeModal();
+        } else {
+            // Check if the clicked element is a CTB element
+            const ctbElement = event.target.closest("[data-ctb-id]");
+            if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
+                // Prevent default action and load CTB
+                event.target.blur();
+                event.preventDefault();
+                loadCtb(event);
+            }
+        }
+    });
 
   /**
    * Handle iframe resize and close messages
