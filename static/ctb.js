@@ -275,8 +275,11 @@
         const ctbElement = event.target.closest("[data-ctb-id]");
         if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
             // Prevent default action and load CTB
-            event.preventDefault();
-            loadCtb(event);
+            event.target.blur();
+            if( supportsGlobalCTB() ) {
+                event.preventDefault();
+                loadCtb(event);
+            }
         }
       }
     });
