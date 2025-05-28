@@ -241,8 +241,11 @@
             if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
                 // Prevent default action and load CTB
                 event.target.blur();
-                event.preventDefault();
-                loadCtb(event);
+                if( supportsGlobalCTB() ) {
+                    event.preventDefault();
+                    loadCtb(event);
+                }
+
             }
         }
     });
