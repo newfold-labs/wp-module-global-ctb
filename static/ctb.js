@@ -4,6 +4,8 @@
  */
 (function () {
   let ctbmodal;
+  let urlToken;
+  let refreshTokenTimeoutId = null;
 
   // -------------------------------------------------------------------------
   // Core CTB functionality
@@ -18,7 +20,6 @@
     const ctbElement = e.target.closest("[data-ctb-id]");
     const ctbId = ctbElement.getAttribute("data-ctb-id");
     const destinationUrl = ctbElement.getAttribute("href");
-
     // Disable element during loading
     ctbElement.setAttribute("disabled", "true");
 
@@ -27,54 +28,86 @@
     const modalWindow = modal.querySelector(".global-ctb-modal-content");
     const modalLoader = modal.querySelector(".global-ctb-loader");
 
-    // Track click event
-    ctbClickEvent(e, ctbId);
-
-    // Fetch CTB iframe URL from API
-    window
-      .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/${ctbId}`, {
-        credentials: "same-origin",
-        headers: {
-          "Content-Type": "application/json",
-          "X-WP-Nonce": window.NewfoldRuntime.restNonce
-        }
-      })
-      .then((response) => {
-        // Re-enable element
+    if( urlToken && ctbId ) {
         ctbElement.removeAttribute("disabled");
-
-        if (response.ok) {
-          return response.json();
-        }
-        throw Error(response.statusText);
-      })
-      .then((data) => {
         // Show close button
         modalWindow.querySelector(".global-ctb-modal-close").style.display =
-          "flex";
-
+            "flex";
         // Create and load iframe
-        const iframe = document.createElement("iframe");
         const locale = (
-          window.NewfoldRuntime?.sdk?.locale || 'en_US'
+            window.NewfoldRuntime?.sdk?.locale || 'en_US'
         )
 
-				iframe.src = data.url + '&locale=' + locale;
-        modalWindow.replaceChild(iframe, modalLoader);
-      })
-      .catch((error) => {
-        displayError(modalWindow, error, ctbElement);
-        closeModal();
-
-        // Remove CTB attributes from element
-        if (ctbElement) {
-          ctbElement.removeAttribute("data-ctb-id");
-          ctbElement.removeAttribute("data-action");
+        try {
+            // Check if the URL token is valid
+            let url = new URL(urlToken);
+            url.searchParams.set('id', ctbId);
+            let iframeURL = url.toString();
+            const iframe = document.createElement("iframe");
+            iframe.src = iframeURL +'&locale=' + locale;
+            modalWindow.replaceChild(iframe, modalLoader);
+        } catch (error) {
+            // If invalid, log error and fallback to API
+            console.error("Invalid URL token:", error);
+            fetchTokenFromAPIFallback();
+            return;
         }
+        ctbClickEvent(e, ctbId);
+    }  else {
+        // Fetch CTB iframe URL from API
+        fetchTokenFromAPIFallback();
+    }
 
-        // Fall back to opening destination URL
-        window.open(destinationUrl, "_blank", "noopener noreferrer");
-      });
+    function fetchTokenFromAPIFallback() {
+        window
+            .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/${ctbId}`, {
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-WP-Nonce": window.NewfoldRuntime.restNonce
+                }
+            })
+            .then((response) => {
+                // Re-enable element
+                ctbElement.removeAttribute("disabled");
+
+                if (response.ok) {
+                    return response.json();
+                }
+                throw Error(response.statusText);
+            })
+            .then((data) => {
+                // Show close button
+                modalWindow.querySelector(".global-ctb-modal-close").style.display =
+                    "flex";
+
+                // Create and load iframe
+                const iframe = document.createElement("iframe");
+                const locale = (
+                    window.NewfoldRuntime?.sdk?.locale || 'en_US'
+                )
+                let iframeURL =  data.url + '&locale=' + locale;
+                iframe.src = iframeURL
+                modalWindow.replaceChild(iframe, modalLoader);
+                setTokenCookie('nfd_global_ctb_url_token', iframeURL, 25);
+                // track click event
+                ctbClickEvent(e, ctbId);
+            })
+            .catch((error) => {
+                displayError(modalWindow, error, ctbElement);
+                closeModal();
+                // track click event
+                ctbClickEvent(e, ctbId);
+                // Remove CTB attributes from element
+                if (ctbElement) {
+                    ctbElement.removeAttribute("data-ctb-id");
+                    ctbElement.removeAttribute("data-action");
+                }
+
+                // Fall back to opening destination URL
+                window.open(destinationUrl, "_blank", "noopener noreferrer");
+            });
+    }
   };
 
   // -------------------------------------------------------------------------
@@ -175,7 +208,9 @@
           page: window.location.href
         }
       }
-    });
+    }).catch( ( error ) => {
+        console.error( 'Error sending event to API', error );
+    } );
   };
 
   /**
@@ -231,50 +266,186 @@
   /**
    * Set up click event delegation for CTB elements
    */
-  document.addEventListener("click", function (event) {
-    // Find CTB element
-    const ctbElement = event.target.closest("[data-ctb-id]");
-
-    // Handle CTB element clicks
-    if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
-      if (supportsGlobalCTB()) {
-        event.preventDefault();
-        loadCtb(event);
+    document.addEventListener("click", function (event) {
+      // Handle modal close button clicks
+      if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
+          closeModal();
+      } else {
+        // Check if the clicked element is a CTB element
+        const ctbElement = event.target.closest("[data-ctb-id]");
+        if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
+            // Prevent default action and load CTB
+            event.target.blur();
+            if( supportsGlobalCTB() ) {
+                event.preventDefault();
+                loadCtb(event);
+            }
+        }
       }
-      // Otherwise fall back to default link behavior
-    }
-
-    // Handle modal close button clicks
-    if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
-      closeModal();
-    }
-  });
+    });
 
   /**
    * Handle iframe resize and close messages
    */
-  window.addEventListener("message", function (event) {
-    // Only process messages from trusted origins
-    if (!event.origin.includes("hiive")) {
-      return;
+    window.addEventListener("message", function (event) {
+        // Only process messages from trusted origins
+        if (!event.origin.includes("hiive")) {
+          return;
+        }
+
+        const iframe = document.querySelector(".global-ctb-modal-content iframe");
+
+        // Handle iframe width adjustments
+        if (event.data.type === "frameWidth" && iframe) {
+          iframe.style.width = event.data.width;
+          iframe.contentWindow.postMessage({ type: "getFrameHeight" }, "*");
+        }
+
+        // Handle iframe height adjustments
+        if (event.data.type === "frameHeight" && iframe) {
+          iframe.style.height = event.data.height;
+        }
+
+        // Handle modal close requests
+        if (event.data === "closeModal") {
+          closeModal();
+        }
+    });
+    /**
+     * Adds an event listener to execute when the DOM content is fully loaded.
+     * If the global CTB (Click-to-Buy) functionality is supported, it schedules a token refresh.
+     */
+    window.addEventListener('DOMContentLoaded', function () {
+        if (supportsGlobalCTB()) {
+            scheduleTokenRefresh('nfd_global_ctb_url_token');
+        }
+    });
+
+    /**
+     * Handle token refresh messages
+     */
+    window.addEventListener("message", function (event) {
+        // Only process messages from trusted origins
+        if (!event.origin.includes("hiive") ) {
+            return;
+        }
+        if( event.data.type === "tokenRefresh" ) {
+            const {accessToken, refreshToken} = event.data.data;
+            if (urlToken) {
+                const url = new URL(urlToken);
+                url.searchParams.set('token', accessToken);
+                url.searchParams.set('refreshToken', refreshToken);
+                urlToken = url.toString();
+                setTokenCookie('nfd_global_ctb_url_token', urlToken, 25);
+            }
+        }
+    });
+
+    /**
+     * Schedules a token refresh based on the expiration time stored in a cookie.
+     * If the token is missing, expired, or invalid, it fetches and sets a new token.
+     *
+     * @param {string} tokenName - The name of the cookie containing the token and its expiration timestamp.
+     */
+    function scheduleTokenRefresh( tokenName ) {
+        const cookieValue = getTokenCookie(tokenName);
+        if (!cookieValue) {
+            // If no cookie, fetch and set the token
+            fetchAndSetUrlToken();
+            return;
+        }
+
+        const parts = cookieValue.split('|');
+        if (parts.length !== 2) {
+            // If cookie format is invalid, fetch and set the token
+            fetchAndSetUrlToken();
+            return;
+        }
+        const expiryTimestamp = Number(parts[1]);
+        const now = Date.now();
+        const timeLeft = expiryTimestamp - now;
+        if (timeLeft <= 0) {
+            // If the token is expired, fetch and set a new token
+            fetchAndSetUrlToken();
+        } else {
+            urlToken = parts[0];
+            console.log('Token is valid, scheduling refresh in', timeLeft, 'ms');
+            // If the token is valid, set a timeout to refresh it
+            if (refreshTokenTimeoutId) clearTimeout(refreshTokenTimeoutId);
+            refreshTokenTimeoutId = setTimeout(() => {
+                fetchAndSetUrlToken();
+            }, timeLeft);
+        }
     }
 
-    const iframe = document.querySelector(".global-ctb-modal-content iframe");
+    /**
+     * Fetches a new URL token from the server and sets it in a cookie.
+     * The token is used for CTB (Click-to-Buy) functionality.
+     *
+     * The function makes a `fetch` request to the server endpoint to retrieve the token.
+     * If the request is successful, the token is stored in a cookie with a specified token life.
+     */
+    function fetchAndSetUrlToken() {
+        window
+            .fetch(`${window.NewfoldRuntime.restUrl}newfold-ctb/v2/ctb/url`, {
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-WP-Nonce": window.NewfoldRuntime.restNonce
+                }
+            })
+            .then((response) => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error(response.statusText);
+                }
+            })
+            .then((data) => {
+                urlToken = data.url;
+                setTokenCookie('nfd_global_ctb_url_token', urlToken, 25);
+            })
+            .catch((error) => {
+                console.error('Error fetching token:', error);
+            });
+    }
+    /**
+     * Sets a cookie with a token and its expiration time, and schedules a token refresh.
+     *
+     * @param {string} name - The name of the cookie to set.
+     * @param {string} token - The token value to store in the cookie.
+     * @param {number} [lifeMinutes=25] - The lifespan of the cookie in minutes (default is 25 minutes).
+     */
+    function setTokenCookie(name, token, lifeMinutes = 25) {
+        const date = new Date();
+        const life = lifeMinutes * 60 * 1000; // ms
+        const setTime = date.getTime() + life;
+        date.setTime(setTime);
+        const expires = "expires=" + date.toUTCString();
+        const tokenWithExpiry = token + '|' + setTime;
+        document.cookie = `${name}=${encodeURIComponent(tokenWithExpiry)}; ${expires}; path=/; Secure; SameSite=Strict`;
 
-    // Handle iframe width adjustments
-    if (event.data.type === "frameWidth" && iframe) {
-      iframe.style.width = event.data.width;
-      iframe.contentWindow.postMessage({ type: "getFrameHeight" }, "*");
+        if (refreshTokenTimeoutId) clearTimeout(refreshTokenTimeoutId);
+        refreshTokenTimeoutId = setTimeout(() => {
+            fetchAndSetUrlToken();
+        }, life);
+    }
+    /**
+     * Retrieves the value of a specific cookie.
+     *
+     * @param {string} name - The name of the cookie to retrieve.
+     * @returns {string|null} - The decoded value of the cookie if it exists, or `null` if not found.
+     */
+    function getTokenCookie(name) {
+        const nameEQ = name + "=";
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(nameEQ)) {
+                return decodeURIComponent(cookie.substring(nameEQ.length));
+            }
+        }
+        return null;
     }
 
-    // Handle iframe height adjustments
-    if (event.data.type === "frameHeight" && iframe) {
-      iframe.style.height = event.data.height;
-    }
-
-    // Handle modal close requests
-    if (event.data === "closeModal") {
-      closeModal();
-    }
-  });
 })();

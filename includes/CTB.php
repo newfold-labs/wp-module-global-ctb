@@ -92,12 +92,11 @@ class CTB {
 	 * @param array $sdk The runtime object.
 	 *
 	 * @return array Modified runtime object.
-	 * 
+	 *
 	 * @see newfold/wp-module-runtime
 	 */
 	public function add_to_runtime( $sdk ) {
 
 		return array_merge( $sdk, array( 'locale' => get_locale() ) );
-		
 	}
 }
