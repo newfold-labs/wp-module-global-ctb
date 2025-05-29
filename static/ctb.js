@@ -123,8 +123,12 @@
    */
   const closeModal = () => {
     if (ctbmodal) {
-      ctbmodal.destroy();
-      document.querySelector("body").classList.remove("noscroll");
+        ctbmodal.destroy();
+        document.querySelector("body").classList.remove("noscroll");
+        let ctbContainer = document.getElementById("nfd-global-ctb-container");
+        if (ctbContainer) {
+            ctbContainer.innerHTML = '';
+        }
     }
   };
 
