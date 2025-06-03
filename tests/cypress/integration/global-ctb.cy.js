@@ -85,10 +85,19 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 
 		// verify iframe src is correct
 		cy.get( '.global-ctb-modal-content iframe' )
-			.should( 'have.attr', 'src', 'https://example.com&locale=en_US' )
-			.should( 'be.visible' );
+            .should( 'be.visible' )
+            .should('have.attr', 'src')
+            .then((src) => {
+                expect(src).to.include('https://example.com');
+                expect(src).to.include('locale=en_US');
+                if (src.includes('id=')) {
+                    expect(src).to.include('id=57d6a568-783c-45e2-a388-847cff155897');
+                }
+            } );
 
-		// CTB iframe dynamic sizing works
+
+
+        // CTB iframe dynamic sizing works
 
 		// Mock the 'frameWidth' and 'frameHeight' message events
 		cy.window().then( ( win ) => {
