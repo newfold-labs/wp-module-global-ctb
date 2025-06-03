@@ -131,7 +131,7 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 		cy.get( '#nfd-global-ctb-container' )
 			.should( 'have.attr', 'aria-hidden' )
 			.and( 'equal', 'true' );
-		cy.get( '.global-ctb-modal-content' ).should( 'not.be.visible' );
+        cy.get( '.global-ctb-modal-content' ).should( 'not.exist' );
 	} );
 
 	it( 'CTB fallback is functional', () => {

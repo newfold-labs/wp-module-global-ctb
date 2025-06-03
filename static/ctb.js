@@ -156,8 +156,12 @@
    */
   const closeModal = () => {
     if (ctbmodal) {
-      ctbmodal.destroy();
-      document.querySelector("body").classList.remove("noscroll");
+        ctbmodal.destroy();
+        document.querySelector("body").classList.remove("noscroll");
+        let ctbContainer = document.getElementById("nfd-global-ctb-container");
+        if (ctbContainer) {
+            ctbContainer.innerHTML = '';
+        }
     }
   };
 
@@ -263,25 +267,26 @@
   // Event listeners
   // -------------------------------------------------------------------------
 
-  /**
-   * Set up click event delegation for CTB elements
-   */
+    /**
+     * Set up click event delegation for CTB elements
+     */
     document.addEventListener("click", function (event) {
-      // Handle modal close button clicks
-      if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
-          closeModal();
-      } else {
-        // Check if the clicked element is a CTB element
-        const ctbElement = event.target.closest("[data-ctb-id]");
-        if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
-            // Prevent default action and load CTB
-            event.target.blur();
-            if( supportsGlobalCTB() ) {
-                event.preventDefault();
-                loadCtb(event);
+        // Handle modal close button clicks
+        if (event.target.hasAttribute("data-a11y-dialog-destroy")) {
+            closeModal();
+        } else {
+            // Check if the clicked element is a CTB element
+            const ctbElement = event.target.closest("[data-ctb-id]");
+            if (ctbElement && ctbElement.getAttribute("disabled") !== "true") {
+                // Prevent default action and load CTB
+                event.target.blur();
+                if( supportsGlobalCTB() ) {
+                    event.preventDefault();
+                    loadCtb(event);
+                }
+
             }
         }
-      }
     });
 
   /**
