@@ -374,7 +374,7 @@
             fetchAndSetUrlToken();
         } else {
             urlToken = parts[0];
-            console.log('Token is valid, scheduling refresh in', timeLeft, 'ms');
+            window.nfdgctb.log = `Token is valid, scheduling refresh in ${ timeLeft }ms`;
             // If the token is valid, set a timeout to refresh it
             if (refreshTokenTimeoutId) clearTimeout(refreshTokenTimeoutId);
             refreshTokenTimeoutId = setTimeout(() => {
