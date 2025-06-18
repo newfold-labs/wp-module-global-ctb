@@ -57,6 +57,10 @@
 			fetchTokenFromAPIFallback();
 		}
 
+		/**
+		 * Fallback if token is not valid.
+		 * Attempts to update token and display ctb modal
+		 */
 		function fetchTokenFromAPIFallback() {
 			window
 				.fetch(
