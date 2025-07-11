@@ -3,11 +3,13 @@
  * Manages CTB modals for product purchase flows with fallback support
  */
 ( function () {
-	let ctbmodal;
+	let ctbModal;
 	let urlToken;
+    let modalContext = 'external';
 	let refreshTokenTimeoutId = null;
+    let modalOpenTime = null;
 
-	// -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
 	// Core CTB functionality
 	// -------------------------------------------------------------------------
 
@@ -28,6 +30,8 @@
 		const modalWindow = modal.querySelector( '.global-ctb-modal-content' );
 		const modalLoader = modal.querySelector( '.global-ctb-loader' );
 
+        modalContext = determineContext( e );
+
 		if ( urlToken && ctbId ) {
 			ctbElement.removeAttribute( 'disabled' );
 			// Show close button
@@ -36,32 +40,32 @@
 			).style.display = 'flex';
 			// Create and load iframe
 			const locale = window.NewfoldRuntime?.sdk?.locale || 'en_US';
-
 			try {
 				// Check if the URL token is valid
-				const url = new URL( urlToken );
+                const url = new URL( urlToken );
 				url.searchParams.set( 'id', ctbId );
 				const iframeURL = url.toString();
 				const iframe = document.createElement( 'iframe' );
 				iframe.src = iframeURL + '&locale=' + locale;
 				modalWindow.replaceChild( iframe, modalLoader );
-			} catch ( error ) {
+                ctbClickEvent( e, ctbId );
+            } catch ( error ) {
 				// If invalid, log error and fallback to API
 				console.error( 'Invalid URL token:', error );
-				fetchTokenFromAPIFallback();
-				return;
+				fetchTokenFromAPIFallback(e);
 			}
-			ctbClickEvent( e, ctbId );
 		} else {
 			// Fetch CTB iframe URL from API
-			fetchTokenFromAPIFallback();
+			fetchTokenFromAPIFallback(e);
 		}
 
 		/**
 		 * Fallback if token is not valid.
 		 * Attempts to update token and display ctb modal
+         * If that fails, it opens the destination URL.
+         * @param {Event} e - Click event
 		 */
-		function fetchTokenFromAPIFallback() {
+		function fetchTokenFromAPIFallback(e) {
 			window
 				.fetch(
 					`${ window.NewfoldRuntime.restUrl }newfold-ctb/v2/ctb/${ ctbId }`,
@@ -74,7 +78,7 @@
 					}
 				)
 				.then( ( response ) => {
-					// Re-enable element
+                    // Re-enable element
 					ctbElement.removeAttribute( 'disabled' );
 
 					if ( response.ok ) {
@@ -101,9 +105,11 @@
 				} )
 				.catch( ( error ) => {
 					displayError( modalWindow, error, ctbElement );
-					closeModal();
-					// track click event
-					ctbClickEvent( e, ctbId );
+                    // Track click event.
+                    ctbClickEvent( e, ctbId, 'ctb_fallback' );
+                    // Close modal after error.
+					closeModal(e, ctbId );
+
 					// Remove CTB attributes from element
 					if ( ctbElement ) {
 						ctbElement.removeAttribute( 'data-ctb-id' );
@@ -156,27 +162,51 @@
 
 		// Set container attributes and show modal
 		ctbContainer.setAttribute( 'data-ctb-id', ctbId );
-		ctbmodal = new A11yDialog( ctbContainer );
-		ctbmodal.show();
+		ctbModal = new A11yDialog( ctbContainer );
+		ctbModal.show();
 		document.querySelector( 'body' ).classList.add( 'noscroll' );
+
+        modalOpenTime = Date.now();
+
 
 		return ctbContainer;
 	};
 
 	/**
 	 * Closes the CTB modal
+     * @param {Event} e - Click event
+     * @param {string|boolean} ctbId - CTB identifier (optional)
 	 */
-	const closeModal = () => {
-		if ( ctbmodal ) {
-			ctbmodal.destroy();
-			document.querySelector( 'body' ).classList.remove( 'noscroll' );
-			const ctbContainer = document.getElementById(
-				'nfd-global-ctb-container'
-			);
-			if ( ctbContainer ) {
-				ctbContainer.innerHTML = '';
-			}
-		}
+	const closeModal = ( e, ctbId = false ) => {
+        let modalData;
+        if (ctbModal) {
+            let modalDuration = 0;
+            const ctbContainer = document.getElementById(
+                'nfd-global-ctb-container'
+            );
+            if (!ctbId) {
+                // If no ctbId is provided, try to get it from the clicked element
+                ctbId = ctbContainer.getAttribute('data-ctb-id');
+            }
+            if (modalOpenTime) {
+                let modalCloseTime = Date.now();
+                modalDuration = (modalCloseTime - modalOpenTime) / 1000;
+                modalOpenTime = null; // Reset
+            }
+            modalData = {
+                modal_duration: modalDuration,
+            }
+            ctbClickEvent(e, ctbId, modalData, 'ctb_modal_closed');
+            // Destroy modal and remove body class
+            ctbModal.destroy();
+            document.querySelector('body').classList.remove('noscroll');
+
+            if (ctbContainer) {
+                ctbContainer.innerHTML = '';
+            }
+
+
+        }
 	};
 
 	/**
@@ -211,21 +241,26 @@
 	 * Tracks CTB click events
 	 * @param {Event}  e     - Click event
 	 * @param {string} ctbId - CTB identifier
+     * @param {Object} [modalData={}] - Additional data for the event
+     * @param {string} action - Action type for the event
+     *
 	 */
-	const ctbClickEvent = ( e, ctbId ) => {
-		window.wp
+	const ctbClickEvent = ( e, ctbId, modalData = {}, action = 'ctb_modal_opened' ) => {
+        data = {
+                label_key: 'ctb_id',
+                ctb_id: ctbId,
+                brand: window.nfdgctb.brand,
+                context: modalContext,
+                page: window.location.href,
+                ...modalData
+        }
+        window.wp
 			.apiFetch( {
 				url: window.nfdgctb.eventendpoint,
 				method: 'POST',
 				data: {
-					action: 'ctb_modal_opened',
-					data: {
-						label_key: 'ctb_id',
-						ctb_id: ctbId,
-						brand: window.nfdgctb.brand,
-						context: determineContext( e ),
-						page: window.location.href,
-					},
+					action: action,
+					data: data,
 				},
 			} )
 			.catch( ( error ) => {
@@ -285,11 +320,12 @@
 
 	/**
 	 * Set up click event delegation for CTB elements
+     * * @param {Event} event - Click event
 	 */
 	document.addEventListener( 'click', function ( event ) {
 		// Handle modal close button clicks
 		if ( event.target.hasAttribute( 'data-a11y-dialog-destroy' ) ) {
-			closeModal();
+			closeModal(event);
 		} else {
 			// Check if the clicked element is a CTB element
 			const ctbElement = event.target.closest( '[data-ctb-id]' );
@@ -307,8 +343,21 @@
 		}
 	} );
 
+    /**
+     * Handle Escape key press to close modal
+     * @param {Event} event - Keydown event
+     */
+    document.addEventListener('keydown', function (event) {
+        // Close modal on Escape key press
+        if ( event.key === 'Escape' && event.target.hasAttribute('data-ctb-id' ) ){
+            closeModal(event);
+        }
+    });
+
+
 	/**
 	 * Handle iframe resize and close messages
+     * @param {MessageEvent} event - Message event
 	 */
 	window.addEventListener( 'message', function ( event ) {
 		// Only process messages from trusted origins
@@ -333,7 +382,7 @@
 
 		// Handle modal close requests
 		if ( event.data === 'closeModal' ) {
-			closeModal();
+			closeModal(event);
 		}
 	} );
 	/**
