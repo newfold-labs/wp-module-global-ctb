@@ -100,15 +100,15 @@
 					iframe.src = iframeURL;
 					modalWindow.replaceChild( iframe, modalLoader );
 					setTokenCookie( 'nfd_global_ctb_url_token', iframeURL, 25 );
-					// track click event
+					// Track click event
 					ctbClickEvent( e, ctbId );
 				} )
 				.catch( ( error ) => {
 					displayError( modalWindow, error, ctbElement );
                     // Track click event.
                     ctbClickEvent( e, ctbId, 'ctb_fallback' );
-                    // Close modal after error.
-					closeModal(e, ctbId );
+                    // Close the modal after an error without sending the close event
+					closeModal(e, ctbId, false );
 
 					// Remove CTB attributes from element
 					if ( ctbElement ) {
@@ -176,8 +176,9 @@
 	 * Closes the CTB modal
      * @param {Event} e - Click event
      * @param {string|boolean} ctbId - CTB identifier (optional)
+     * @param {boolean} sendEvent - Whether to send close event (default: true)
 	 */
-	const closeModal = ( e, ctbId = false ) => {
+	const closeModal = ( e, ctbId = false, sendEvent = true ) => {
         let modalData;
         if (ctbModal) {
             let modalDuration = 0;
@@ -196,7 +197,9 @@
             modalData = {
                 modal_duration: modalDuration,
             }
-            ctbClickEvent(e, ctbId, modalData, 'ctb_modal_closed');
+            if( sendEvent ) {
+                ctbClickEvent(e, ctbId, modalData, 'ctb_modal_closed');
+            }
             // Destroy modal and remove body class
             ctbModal.destroy();
             document.querySelector('body').classList.remove('noscroll');
