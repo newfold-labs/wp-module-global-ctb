@@ -3,6 +3,10 @@
   "description": "Newfold module for Global 'Click to Buy' functionality in brand plugins",
   "license": "GPL-2.0-or-later",
   "private": true,
+  "engines": {
+    "node": ">=22.11.0",
+    "npm": ">=10.9.0"
+  },
   "author": {
     "name": "Evan Mullins",
     "url": "https://evanmullins.com"
