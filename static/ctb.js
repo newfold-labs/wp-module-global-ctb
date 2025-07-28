@@ -47,7 +47,7 @@
 				url.searchParams.set( 'id', ctbId );
 				const iframeURL = url.toString();
 				const iframe = document.createElement( 'iframe' );
-				iframe.src = iframeURL + '&locale=' + locale;
+				iframe.src = window?.NewfoldRuntime?.linkTracker?.addUtmParams(iframeURL + '&locale=' + locale) || iframeURL + '&locale=' + locale;
 				modalWindow.replaceChild( iframe, modalLoader );
                 ctbClickEvent( e, ctbId );
             } catch ( error ) {
@@ -98,7 +98,7 @@
 					const locale =
 						window.NewfoldRuntime?.sdk?.locale || 'en_US';
 					const iframeURL = data.url + '&locale=' + locale;
-					iframe.src = iframeURL;
+					iframe.src = window?.NewfoldRuntime?.linkTracker?.addUtmParams(iframeURL) || iframeURL;
 					modalWindow.replaceChild( iframe, modalLoader );
 					setTokenCookie( 'nfd_global_ctb_url_token', iframeURL, 25 );
 					// Track click event
@@ -119,7 +119,7 @@
 
 					// Fall back to opening destination URL
 					window.open(
-						destinationUrl,
+                        window?.NewfoldRuntime?.linkTracker?.addUtmParams( destinationUrl ) || destinationUrl,
 						'_blank',
 						'noopener noreferrer'
 					);
