@@ -8,6 +8,7 @@
     let modalContext = 'external';
 	let refreshTokenTimeoutId = null;
     let modalOpenTime = null;
+    let userError = null;
 
     // -------------------------------------------------------------------------
 	// Core CTB functionality
@@ -198,6 +199,10 @@
                 modal_duration: modalDuration,
             }
             if( sendEvent ) {
+                if ( userError ) {
+                    modalData.user_error = userError;
+                    userError = null; // Reset after sending
+                }
                 ctbClickEvent(e, ctbId, modalData, 'ctb_modal_closed');
             }
             // Destroy modal and remove body class
@@ -416,6 +421,10 @@
 				setTokenCookie( 'nfd_global_ctb_url_token', urlToken, 25 );
 			}
 		}
+        if ( event.data.type === 'userError' ) {
+            const {errors} = event.data.errors;
+            userError = errors;
+        }
 	} );
 
 	/**
