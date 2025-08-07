@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@testing-library/cypress": "^10.0.3",
-    "cypress": "^14.5.3",
+    "cypress": "^14.5.4",
     "cypress-axe": "^1.6.0"
   }
 }
