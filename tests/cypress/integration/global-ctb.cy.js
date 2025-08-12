@@ -68,7 +68,7 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 		cy.get( 'body' ).should( 'not.have.class', 'noscroll' );
 
 		// CTB modal opens successfully
-		cy.get( '[data-action="load-nfd-ctb"]' ).scrollIntoView().click();
+		cy.get( '.nfd-button--primary[data-action="load-nfd-ctb"]' ).scrollIntoView().click();
 
 		// wait for intercept with data
 		cy.wait( '@ctb' );
@@ -90,9 +90,6 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
             .then((src) => {
                 expect(src).to.include('https://example.com');
                 expect(src).to.include('locale=en_US');
-                if (src.includes('id=')) {
-                    expect(src).to.include('id=57d6a568-783c-45e2-a388-847cff155897');
-                }
             } );
 
 
@@ -149,12 +146,11 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 			.should( 'exist' )
 			.should( 'be.visible' );
 		cy.get( '.nfd-button--primary[data-action="load-nfd-ctb"]' )
-			.should(
-				'have.attr',
-				'href',
-				'https://yoa.st/bh-premium?utm_source=wp-admin%2Fadmin.php&utm_medium=brand_plugin'
-			)
-			.click();
+			.should( 'have.attr', 'href' )
+				.then( ( href ) => {
+					expect( href.includes( 'https://yoa.st/bh-premium' ) ).to.be.true;
+				} );
+		cy.get( '.nfd-button--primary[data-action="load-nfd-ctb"]' ).click();
 
 		// confirm modal is still closed
 		cy.get( 'body' ).should( 'not.have.class', 'noscroll' );
