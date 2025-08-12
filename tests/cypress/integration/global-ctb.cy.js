@@ -89,10 +89,10 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
             .should('have.attr', 'src')
             .then((src) => {
                 expect(src).to.include('https://example.com');
-                expect(src).to.include('locale=en_US');
+				expect(src).to.include('locale=en_US');
+				expect(src).to.include('id=57d6a568-783c-45e2-a388-847cff155897');
+				// no need to check utm params, they are added by link tracker
             } );
-
-
 
         // CTB iframe dynamic sizing works
 

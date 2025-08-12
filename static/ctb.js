@@ -44,10 +44,9 @@
 			try {
 				// Check if the URL token is valid
                 const url = new URL( urlToken );
-				url.searchParams.set( 'id', ctbId );
-				const iframeURL = url.toString();
+				const iframeURL = constructIframeURL( url, ctbId );
 				const iframe = document.createElement( 'iframe' );
-				iframe.src = window?.NewfoldRuntime?.linkTracker?.addUtmParams( iframeURL, { 'locale': locale } ) || iframeURL;
+				iframe.src = iframeURL;
 				modalWindow.replaceChild( iframe, modalLoader );
                 ctbClickEvent( e, ctbId );
             } catch ( error ) {
@@ -95,9 +94,8 @@
 
 					// Create and load iframe
 					const iframe = document.createElement( 'iframe' );
-					const locale = window.NewfoldRuntime?.sdk?.locale || 'en_US';
-					const iframeURL = data.url;
-					iframe.src = window?.NewfoldRuntime?.linkTracker?.addUtmParams( iframeURL, { 'locale': locale } ) || iframeURL;
+					const iframeURL = constructIframeURL( data.url, ctbId );
+					iframe.src = iframeURL;
 					modalWindow.replaceChild( iframe, modalLoader );
 					setTokenCookie( 'nfd_global_ctb_url_token', iframeURL, 25 );
 					// Track click event
@@ -125,6 +123,15 @@
 				} );
 		}
 	};
+	const constructIframeURL = ( url, ctbId ) => {
+		const locale = window.NewfoldRuntime?.sdk?.locale || 'en_US';
+		if ( typeof window?.NewfoldRuntime?.linkTracker?.addUtmParams === 'function' ) {
+			// add utm params if link tracker is available
+			return window?.NewfoldRuntime?.linkTracker?.addUtmParams( url, { 'locale': locale, 'id': ctbId } );
+		}
+		// if link tracker is not available, construct with id and locale params only
+		return url.searchParams.set( 'id', ctbId ).set( 'locale', locale ).toString();
+	}
 
 	// -------------------------------------------------------------------------
 	// Modal management
