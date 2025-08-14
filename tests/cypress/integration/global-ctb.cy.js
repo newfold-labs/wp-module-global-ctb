@@ -91,12 +91,12 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
             .should( 'have.attr', 'src' )
             .then( ( src ) => {
 				cy.log( 'iframe src: ' + src );
-                expect( src).to.include( 'https://example.com' ); // from intercept, see line 27
-				// check for required params individually linkTracker adds utm params
-				expect( src ).to.include( 'locale=en_US' ); // from ctb.js
-				expect( src ).to.include( 'id=57d6a568-783c-45e2-a388-847cff155897' ); // from ctb.js
+                expect( src ).to.include( 'https://example.com' ); // from intercept, see line 27
+				// optionally check for ctb.js params individually
+				expect( src ).to.include( 'locale=en_US' );
+				expect( src ).to.include( 'id=57d6a568-783c-45e2-a388-847cff155897' );
 				// no need to check otherutm params, since they are added by link tracker
-            } );
+			} );
 
         // CTB iframe dynamic sizing works
 

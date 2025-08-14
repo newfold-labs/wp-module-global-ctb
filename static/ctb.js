@@ -124,12 +124,16 @@
 	};
 	const constructIframeURL = ( url, ctbId ) => {
 		const locale = window.NewfoldRuntime?.sdk?.locale || 'en_US';
+		const urlObj = new URL(url);
+		// add id and locale params
+		urlObj.searchParams.set('id', ctbId);
+		urlObj.searchParams.set('locale', locale);
+		// if link tracker is available, add utm params
 		if ( typeof window?.NewfoldRuntime?.linkTracker?.addUtmParams === 'function' ) {
-			// add utm params if link tracker is available
-			return window?.NewfoldRuntime?.linkTracker?.addUtmParams( url, { 'locale': locale, 'id': ctbId } );
+			return window?.NewfoldRuntime?.linkTracker?.addUtmParams( urlObj.href );
 		}
-		// if link tracker is not available, construct with id and locale params only
-		return url.searchParams.set( 'id', ctbId ).set( 'locale', locale ).toString();
+		// if link tracker is not available
+		return urlObj.href;
 	}
 
 	// -------------------------------------------------------------------------
