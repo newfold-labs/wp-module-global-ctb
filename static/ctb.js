@@ -40,7 +40,6 @@
 				'.global-ctb-modal-close'
 			).style.display = 'flex';
 			// Create and load iframe
-			const locale = window.NewfoldRuntime?.sdk?.locale || 'en_US';
 			try {
 				// Check if the URL token is valid
                 const url = new URL( urlToken );
