@@ -53,11 +53,13 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 		} );
 
 		// Check CTB Button attributes
-		cy.get( '#marketplace-item-a1ff70f1-9670-4e25-a0e1-a068d3e43a45' )
+		cy.get( '#marketplace-item-a1ff70f1-9670-4e25-a0e1-a068d3e43a45' ).as( 'yoast' );
+		cy.get( '@yoast' )
 			.scrollIntoView()
 			.should( 'exist' )
 			.should( 'be.visible' );
-		cy.get( '.nfd-button--primary[data-action="load-nfd-ctb"]' )
+		cy.get( '@yoast' ).find( '[data-action="load-nfd-ctb"]' ).as( 'yoast-ctb-button' );
+		cy.get( '@yoast-ctb-button' )
 			.should(
 				'have.attr',
 				'data-ctb-id',
@@ -68,7 +70,7 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 		cy.get( 'body' ).should( 'not.have.class', 'noscroll' );
 
 		// CTB modal opens successfully
-		cy.get( '[data-action="load-nfd-ctb"]' ).scrollIntoView().click();
+		cy.get( '@yoast-ctb-button' ).scrollIntoView().click();
 
 		// wait for intercept with data
 		cy.wait( '@ctb' );
@@ -86,16 +88,15 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 		// verify iframe src is correct
 		cy.get( '.global-ctb-modal-content iframe' )
             .should( 'be.visible' )
-            .should('have.attr', 'src')
-            .then((src) => {
-                expect(src).to.include('https://example.com');
-                expect(src).to.include('locale=en_US');
-                if (src.includes('id=')) {
-                    expect(src).to.include('id=57d6a568-783c-45e2-a388-847cff155897');
-                }
-            } );
-
-
+            .should( 'have.attr', 'src' )
+            .then( ( src ) => {
+				cy.log( 'iframe src: ' + src );
+                expect( src ).to.include( 'https://example.com' ); // from intercept, see line 27
+				// optionally check for ctb.js params individually
+				expect( src ).to.include( 'locale=en_US' );
+				expect( src ).to.include( 'id=57d6a568-783c-45e2-a388-847cff155897' );
+				// no need to check otherutm params, since they are added by link tracker
+			} );
 
         // CTB iframe dynamic sizing works
 
@@ -149,12 +150,11 @@ describe( 'Global Click to Buy', { testIsolation: true }, () => {
 			.should( 'exist' )
 			.should( 'be.visible' );
 		cy.get( '.nfd-button--primary[data-action="load-nfd-ctb"]' )
-			.should(
-				'have.attr',
-				'href',
-				'https://yoa.st/bh-premium?utm_source=wp-admin%2Fadmin.php&utm_medium=brand_plugin'
-			)
-			.click();
+			.should( 'have.attr', 'href' )
+				.then( ( href ) => {
+					expect( href.includes( 'https://yoa.st/bh-premium' ) ).to.be.true;
+				} );
+		cy.get( '.nfd-button--primary[data-action="load-nfd-ctb"]' ).click();
 
 		// confirm modal is still closed
 		cy.get( 'body' ).should( 'not.have.class', 'noscroll' );
