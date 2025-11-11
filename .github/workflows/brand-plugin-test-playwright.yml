@@ -1,4 +1,6 @@
 name: Build and Test Module Updates in Brand Plugins (Playwright tests)
+permissions:
+  contents: read
 on:
   pull_request:
     types: [ opened, reopened, ready_for_review, synchronize ]
