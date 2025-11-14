@@ -1,6 +1,6 @@
 <?php
 
-namespace NewFoldLabs\WP\Module\GlobalCTB;
+namespace NewfoldLabs\WP\Module\GlobalCTB;
 
 use NewfoldLabs\WP\Module\Data\HiiveConnection;
 use NewfoldLabs\WP\Module\Data\SiteCapabilities;
