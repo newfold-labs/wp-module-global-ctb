@@ -1,58 +1,36 @@
 /**
- * Global CTB Module Test Helpers
+ * Global CTB Module Test Helpers for Playwright
  * 
- * Specific utilities for testing the global click-to-buy (CTB) module functionality.
- * Includes API mocking, capability management, and CTB-specific assertions.
+ * Utilities for testing the Deactivation module functionality.
+ * Includes plugin activation/deactivation helpers and survey interactions.
  */
+import { join, dirname } from 'path';
+import { readFileSync } from 'fs';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { expect } from '@playwright/test';
 
-const { expect } = require('@playwright/test');
-const { execSync } = require('child_process');
+// ES module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-/**
- * WordPress CLI helper for global CTB module
- * 
- * @param {string} cmd - WP-CLI command to execute
- * @param {boolean} failOnNonZeroExit - Whether to fail on non-zero exit code
- * @returns {string} Command output
- */
-function wpCli(cmd, failOnNonZeroExit = true) {
-  try {
-    const result = execSync(`npx wp-env run cli wp ${cmd}`, { 
-      encoding: 'utf-8',
-      stdio: failOnNonZeroExit ? 'pipe' : 'inherit'
-    });
-    return result.trim();
-  } catch (error) {
-    if (failOnNonZeroExit) {
-      throw new Error(`WP-CLI command failed: ${cmd}\n${error.message}`);
-    }
-    return '';
-  }
-}
+// Resolve plugin directory from PLUGIN_DIR env var (set by playwright.config.mjs) or process.cwd()
+const pluginDir = process.env.PLUGIN_DIR || process.cwd();
 
-/**
- * Set capability helper
- * 
- * This calls performs a cli command to set a specific capability
- * 
- * @param {Object} capJSON - JSON of capabilities
- * @param {number} expiration - Seconds for transient to expire, default 3600 (1 hour)
- */
-function setCapability(capJSON, expiration = 3600) {
-  try {
-    wpCli(
-      `option update _transient_nfd_site_capabilities '${JSON.stringify(capJSON)}' --format=json`
-    );
-    
-    // Set transient expiration to specified time from now
-    const expiry = Math.floor(new Date().getTime() / 1000.0) + expiration;
-    wpCli(
-      `option update _transient_timeout_nfd_site_capabilities ${expiry}`
-    );
-  } catch (error) {
-    console.warn('Failed to set capability:', error.message);
-  }
-}
+// Build path to plugin helpers (.mjs extension for ES module compatibility)
+const finalHelpersPath = join(pluginDir, 'tests/playwright/helpers/index.mjs');
+
+// Import plugin helpers using file:// URL
+const helpersUrl = pathToFileURL(finalHelpersPath).href;
+const pluginHelpers = await import(helpersUrl);
+// destructure pluginHelpers
+let { auth, wordpress, newfold, a11y, utils } = pluginHelpers;
+// destructure wpCli from wordpress
+const { wpCli } = wordpress;
+const { fancyLog } = utils;
+const { setCapability } = newfold;
+
+// Test data fixtures
+const productsFixture = JSON.parse(readFileSync(join(__dirname, '../fixtures/global-ctb-products.json'), 'utf8'));
 
 /**
  * Clear marketplace transient data
@@ -63,7 +41,7 @@ async function clearMarketplaceTransient(page) {
   try {
     wpCli('transient delete newfold_marketplace', false);
   } catch (error) {
-    console.warn('Failed to clear marketplace transient:', error.message);
+    fancyLog('Failed to clear marketplace transient:', error.message);
   }
 }
 
@@ -364,9 +342,16 @@ async function verifyBodyScrollState(page, shouldHaveNoScroll) {
   }
 }
 
-module.exports = {
-  wpCli,
-  setCapability,
+export {
+  // Plugin helpers (re-exported for convenience)
+  auth,
+  wordpress,
+  newfold,
+  a11y,
+  utils,
+  // Test data fixtures
+  productsFixture,
+  // Global CTB specific helpers
   clearMarketplaceTransient,
   setupMarketplaceIntercepts,
   setupCTBIntercepts,
