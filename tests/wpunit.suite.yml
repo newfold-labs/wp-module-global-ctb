@@ -18,4 +18,4 @@ modules:
         plugins: []
         activatePlugins: []
         WP_HTTP_BLOCK_EXTERNAL: true
-bootstrap: wpunit/_bootstrap.php
+bootstrap: _bootstrap.php
