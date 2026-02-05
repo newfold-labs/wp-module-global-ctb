@@ -13,3 +13,10 @@ cypress.env.json
 /tests/cypress/downloads
 /tests/cypress/screenshots
 /tests/cypress/videos
+
+# WP-Browser / wpunit
+.env.testing
+/tests/_output
+/tests/_support/_generated
+/wordpress
+/wp-content
