@@ -12,6 +12,6 @@
     "url": "https://evanmullins.com"
   },
   "devDependencies": {
-    "playwright": "^1.58.2"
+    "playwright": "^1.59.1"
   }
 }
