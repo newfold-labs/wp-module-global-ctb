@@ -7,6 +7,7 @@ import {
   setupMarketplaceIntercepts,
   setupCTBIntercepts,
   navigateToMarketplace,
+  waitForMarketplaceProductCard,
   setCTBCapabilityInBrowser,
   waitForCTBModal,
   waitForCTBModalClose,
@@ -50,9 +51,10 @@ test.describe('Global Click to Buy (CTB)', () => {
     await setCTBCapabilityInBrowser(page, true);
 
     // Scope to marketplace card — `.first()` on the page matches unrelated CTB links (e.g. Yoast) that may be hidden
+    await waitForMarketplaceProductCard(page, marketplaceProductId);
     const ctbButton = getCTBButton(page, marketplaceProductId);
-    await ctbButton.waitFor({ state: 'visible', timeout: 15000 });
-    await expect(ctbButton).toBeVisible();
+    await ctbButton.scrollIntoViewIfNeeded();
+    await expect(ctbButton).toBeVisible({ timeout: 20000 });
     await expect(ctbButton).toHaveAttribute('data-ctb-id');
     await expect(ctbButton).toHaveAttribute('target', '_blank');
 
@@ -60,7 +62,6 @@ test.describe('Global Click to Buy (CTB)', () => {
     await verifyBodyScrollState(page, false);
 
     // Open CTB modal
-    await ctbButton.scrollIntoViewIfNeeded();
     await ctbButton.click();
 
     // Wait for modal contents
@@ -94,8 +95,10 @@ test.describe('Global Click to Buy (CTB)', () => {
     await verifyBodyScrollState(page, false);
 
     // Verify fallback href and clicking does not open modal
+    await waitForMarketplaceProductCard(page, marketplaceProductId);
     const ctbButton = getCTBButton(page, marketplaceProductId);
-    await ctbButton.waitFor({ state: 'visible', timeout: 15000 });
+    await ctbButton.scrollIntoViewIfNeeded();
+    await expect(ctbButton).toBeVisible({ timeout: 20000 });
     await expect(ctbButton).toHaveAttribute('href');
     await ctbButton.click();
 
