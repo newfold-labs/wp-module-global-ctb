@@ -7,9 +7,11 @@ import {
   setupMarketplaceIntercepts,
   setupCTBIntercepts,
   navigateToMarketplace,
+  waitForMarketplaceProductCard,
   setCTBCapabilityInBrowser,
   waitForCTBModal,
   waitForCTBModalClose,
+  getCTBButton,
   getCTBIframe,
   closeCTBModal,
   verifyCTBModalOpen,
@@ -21,6 +23,9 @@ import {
 
 // Brand plugin id
 const pluginId = process.env.PLUGIN_ID || 'bluehost';
+
+// Marketplace product id from fixture (scoped CTB — avoid matching other plugins' [data-action="load-nfd-ctb"], e.g. Yoast admin bar)
+const marketplaceProductId = productsFixture.products.data[0].id;
 
 test.describe('Global Click to Buy (CTB)', () => {
   test.beforeEach(async ({ page }) => {
@@ -45,9 +50,11 @@ test.describe('Global Click to Buy (CTB)', () => {
     await navigateToMarketplace(page, pluginId);
     await setCTBCapabilityInBrowser(page, true);
 
-    // Find a CTB button and verify attributes
-    const ctbButton = page.locator('[data-action="load-nfd-ctb"]').first();
-    await expect(ctbButton).toBeVisible();
+    // Scope to marketplace card — `.first()` on the page matches unrelated CTB links (e.g. Yoast) that may be hidden
+    await waitForMarketplaceProductCard(page, marketplaceProductId);
+    const ctbButton = getCTBButton(page, marketplaceProductId);
+    await ctbButton.scrollIntoViewIfNeeded();
+    await expect(ctbButton).toBeVisible({ timeout: 20000 });
     await expect(ctbButton).toHaveAttribute('data-ctb-id');
     await expect(ctbButton).toHaveAttribute('target', '_blank');
 
@@ -55,7 +62,6 @@ test.describe('Global Click to Buy (CTB)', () => {
     await verifyBodyScrollState(page, false);
 
     // Open CTB modal
-    await ctbButton.scrollIntoViewIfNeeded();
     await ctbButton.click();
 
     // Wait for modal contents
@@ -89,7 +95,10 @@ test.describe('Global Click to Buy (CTB)', () => {
     await verifyBodyScrollState(page, false);
 
     // Verify fallback href and clicking does not open modal
-    const ctbButton = page.locator('[data-action="load-nfd-ctb"]').first();
+    await waitForMarketplaceProductCard(page, marketplaceProductId);
+    const ctbButton = getCTBButton(page, marketplaceProductId);
+    await ctbButton.scrollIntoViewIfNeeded();
+    await expect(ctbButton).toBeVisible({ timeout: 20000 });
     await expect(ctbButton).toHaveAttribute('href');
     await ctbButton.click();
 

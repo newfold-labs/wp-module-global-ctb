@@ -46,6 +46,28 @@ async function clearMarketplaceTransient(page) {
 }
 
 /**
+ * True for GET of the aggregate marketplace endpoint.
+ * NewfoldRuntime.createApiUrl uses addQueryArgs + rest_route (plain permalinks), not only /wp-json/... .
+ * @param {URL} url
+ */
+function isMarketplaceAggregateUrl(url) {
+  const href = url.href;
+  if (/newfold-marketplace(%2F|\/)v1(%2F|\/)marketplace/i.test(href)) {
+    return true;
+  }
+  const rr = url.searchParams.get('rest_route');
+  if (rr) {
+    try {
+      const path = decodeURIComponent(rr).replace(/\/$/, '');
+      return path === '/newfold-marketplace/v1/marketplace' || path.endsWith('newfold-marketplace/v1/marketplace');
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
+
+/**
  * Setup marketplace API intercepts
  * 
  * @param {import('@playwright/test').Page} page - Playwright page object
@@ -53,7 +75,11 @@ async function clearMarketplaceTransient(page) {
  * @param {number} delay - Response delay in milliseconds
  */
 async function setupMarketplaceIntercepts(page, marketplaceData, delay = 0) {
-  await page.route('**/newfold-marketplace/v1/marketplace**', async (route) => {
+  await page.route(isMarketplaceAggregateUrl, async (route) => {
+    if (route.request().method() !== 'GET') {
+      await route.continue();
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -88,7 +114,22 @@ async function setupCTBIntercepts(page, ctbData = { url: 'https://example.com' }
  * @param {string} pluginId - Plugin ID for URL construction
  */
 async function navigateToMarketplace(page, pluginId = 'bluehost') {
-  await page.goto(`/wp-admin/admin.php?page=${pluginId}#/marketplace`);
+  await page.goto(`/wp-admin/admin.php?page=${pluginId}#/marketplace`, {
+    waitUntil: 'domcontentloaded',
+  });
+  await page.locator('.newfold-marketplace-wrapper').waitFor({ state: 'attached', timeout: 30000 });
+}
+
+/**
+ * Wait until the marketplace product card exists (data loaded and list rendered).
+ * @param {import('@playwright/test').Page} page
+ * @param {string} productId
+ */
+async function waitForMarketplaceProductCard(page, productId) {
+  await page.locator(`[id="marketplace-item-${productId}"]`).waitFor({
+    state: 'attached',
+    timeout: 30000,
+  });
 }
 
 /**
@@ -137,7 +178,7 @@ async function waitForCTBModalClose(page, timeout = 5000) {
  * @returns {import('@playwright/test').Locator} CTB button locator
  */
 function getCTBButton(page, productId) {
-  return page.locator(`#marketplace-item-${productId} [data-action="load-nfd-ctb"]`);
+  return page.locator(`[id="marketplace-item-${productId}"] [data-action="load-nfd-ctb"]`);
 }
 
 /**
@@ -356,6 +397,7 @@ export {
   setupMarketplaceIntercepts,
   setupCTBIntercepts,
   navigateToMarketplace,
+  waitForMarketplaceProductCard,
   setCTBCapabilityInBrowser,
   waitForCTBModal,
   waitForCTBModalClose,
