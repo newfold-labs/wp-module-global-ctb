@@ -26,7 +26,7 @@ jobs:
         id: extract_branch
 
   bluehost:
-    name: Bluehost Build and Test Cypress
+    name: Bluehost Build and Test Playwright
     needs: setup
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
@@ -36,7 +36,7 @@ jobs:
     secrets: inherit
 
   bluehost-dev:
-    name: Bluehost DEV Build and Test Cypress
+    name: Bluehost DEV Build and Test Playwright
     needs: setup
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
@@ -47,7 +47,7 @@ jobs:
     secrets: inherit
 
   hostgator:
-    name: Hostgator Build and Test Cypress
+    name: Hostgator Build and Test Playwright
     needs: setup
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
