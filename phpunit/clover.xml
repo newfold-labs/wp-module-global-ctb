@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1775163087">
-  <project timestamp="1775163087">
+<coverage generated="1776450226">
+  <project timestamp="1776450226">
     <file name="/home/runner/work/wp-module-global-ctb/wp-module-global-ctb/bootstrap.php">
       <line num="9" type="stmt" count="0"/>
       <line num="10" type="stmt" count="0"/>
