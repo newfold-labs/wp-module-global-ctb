@@ -1,6 +1,4 @@
 name: Build and Test Module Updates in Brand Plugins (Playwright tests)
-permissions:
-  contents: read
 on:
   pull_request:
     types: [ opened, reopened, ready_for_review, synchronize ]
@@ -12,10 +10,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
   cancel-in-progress: true
 
+# Disable permissions for all available scopes by default.
+# Any needed permissions should be configured at the job level.
+permissions: {}
+
 jobs:
   setup:
     name: Setup
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
     steps:
@@ -28,6 +31,8 @@ jobs:
   bluehost:
     name: Bluehost Build and Test Playwright
     needs: setup
+    permissions:
+      contents: read # Required to clone the repo (matches reusable workflow; private repo checkout).
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
       module-repo: ${{ github.repository }}
@@ -38,6 +43,8 @@ jobs:
   bluehost-dev:
     name: Bluehost DEV Build and Test Playwright
     needs: setup
+    permissions:
+      contents: read # Required to clone the repo (matches reusable workflow; private repo checkout).
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
       module-repo: ${{ github.repository }}
@@ -49,6 +56,8 @@ jobs:
   hostgator:
     name: Hostgator Build and Test Playwright
     needs: setup
+    permissions:
+      contents: read # Required to clone the repo (matches reusable workflow; private repo checkout).
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
       module-repo: ${{ github.repository }}
