@@ -233,15 +233,42 @@
 	 * @param {HTMLElement}  ctbElement  - CTB element that was clicked
 	 */
 	const displayError = ( modalWindow, error, ctbElement ) => {
-		const message =
-			error === 'purchase'
-				? 'complete the transaction'
-				: 'load the product information';
-		modalWindow.innerHTML = `<div style="text-align:center;">
-			<h3>${ error }</h3>
-			<p>Sorry, we are unable to ${ message } at this time.</p>
-			<button class="components-button bluehost is-primary" data-a11y-dialog-destroy>Cancel</button>
-		</div>`;
+		const { __ } = wp.i18n;
+		const isPurchaseError = error === 'purchase';
+		const headingText = isPurchaseError
+			? __( 'Unable to complete purchase', 'wp-module-global-ctb' )
+			: error instanceof Error
+				? error.message
+				: String( error );
+		const bodyText = isPurchaseError
+			? __(
+					'Sorry, we are unable to complete the transaction at this time.',
+					'wp-module-global-ctb'
+			  )
+			: __(
+					'Sorry, we are unable to load the product information at this time.',
+					'wp-module-global-ctb'
+			  );
+
+		const wrapper = document.createElement( 'div' );
+		wrapper.style.textAlign = 'center';
+
+		const heading = document.createElement( 'h3' );
+		heading.textContent = headingText;
+
+		const paragraph = document.createElement( 'p' );
+		paragraph.textContent = bodyText;
+
+		const button = document.createElement( 'button' );
+		button.className = 'components-button bluehost is-primary';
+		button.setAttribute( 'data-a11y-dialog-destroy', '' );
+		button.textContent = __( 'Cancel', 'wp-module-global-ctb' );
+
+		wrapper.appendChild( heading );
+		wrapper.appendChild( paragraph );
+		wrapper.appendChild( button );
+
+		modalWindow.replaceChildren( wrapper );
 
 		// Remove attributes from clicked element
 		if ( ctbElement ) {
