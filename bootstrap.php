@@ -12,7 +12,7 @@ if ( function_exists( 'add_action' ) ) {
 			register(
 				array(
 					'name'     => 'global-ctb',
-					'label'    => __( 'global-ctb', 'newfold-global-ctb-module' ),
+					'label'    => __( 'global-ctb', 'wp-module-global-ctb' ),
 					'callback' => function ( Container $container ) {
 						return new CTB( $container );
 					},
