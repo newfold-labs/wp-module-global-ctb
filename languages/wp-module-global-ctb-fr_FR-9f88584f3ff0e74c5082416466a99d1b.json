@@ -1,5 +1,5 @@
 {
-    "translation-revision-date": "2026-09-03T16:06:16+00:00",
+    "translation-revision-date": "2026-09-03T17:30:19+00:00",
     "generator": "WP-CLI\/2.12.0",
     "source": "static\/ctb.js",
     "domain": "messages",
@@ -11,16 +11,16 @@
                 "plural-forms": "nplurals=2; plural=(n > 1);"
             },
             "Unable to complete purchase": [
-                ""
+                "Impossible de finaliser l\u2019achat"
             ],
             "Sorry, we are unable to complete the transaction at this time.": [
-                ""
+                "D\u00e9sol\u00e9, nous ne pouvons pas finaliser la transaction pour le moment."
             ],
             "Sorry, we are unable to load the product information at this time.": [
-                ""
+                "D\u00e9sol\u00e9, nous ne pouvons pas charger les informations du produit pour le moment."
             ],
             "Cancel": [
-                ""
+                "Annuler"
             ]
         }
     }

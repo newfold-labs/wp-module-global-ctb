@@ -1,23 +1,26 @@
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/newfold-labs/wp-module-global-ctb/issues\n"
-"POT-Creation-Date: 2025-02-13T09:55:55+00:00\n"
-"PO-Revision-Date: 2026-09-03T16:54:05+00:00\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-02-13T09:55:55+00:00\n"
+"PO-Revision-Date: 2026-09-03T17:30:19+00:00\n"
+"Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Domain: wp-module-global-ctb\n"
 "X-Generator: WP-CLI 2.12.0\n"
 
-#: static/ctb.js:265
-msgid "Cancel"
-msgstr "Cancelar"
+#: bootstrap.php:30
+msgid "global-ctb"
+msgstr "global-ctb"
+
+#: static/ctb.js:239
+msgid "Unable to complete purchase"
+msgstr "Impossível concluir a compra"
 
 #: static/ctb.js:244
 msgid "Sorry, we are unable to complete the transaction at this time."
@@ -27,10 +30,6 @@ msgstr "Desculpe, não conseguimos concluir a transação no momento."
 msgid "Sorry, we are unable to load the product information at this time."
 msgstr "Desculpe, não conseguimos carregar as informações do produto no momento."
 
-#: static/ctb.js:239
-msgid "Unable to complete purchase"
-msgstr "Impossível concluir a compra"
-
-#: bootstrap.php:30
-msgid "global-ctb"
-msgstr "global-ctb"
+#: static/ctb.js:265
+msgid "Cancel"
+msgstr "Cancelar"
