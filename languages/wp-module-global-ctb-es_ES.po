@@ -1,20 +1,35 @@
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://github.com/newfold-labs/wp-module-global-ctb/issues\n"
-"POT-Creation-Date: 2025-02-13T09:55:55+00:00\n"
-"PO-Revision-Date: 2026-09-02T18:37:29+00:00\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Domain: wp-module-global-ctb\n"
+"POT-Creation-Date: 2025-02-13T09:55:55+00:00\n"
+"PO-Revision-Date: 2026-09-03T16:06:16+00:00\n"
+"Language: es\n"
 "X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wp-module-global-ctb\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bootstrap.php:15
+#: bootstrap.php:30
 msgid "global-ctb"
-msgstr "Global-CTB"
+msgstr "global-ctb"
+
+#: static/ctb.js:239
+msgid "Unable to complete purchase"
+msgstr ""
+
+#: static/ctb.js:244
+msgid "Sorry, we are unable to complete the transaction at this time."
+msgstr ""
+
+#: static/ctb.js:248
+msgid "Sorry, we are unable to load the product information at this time."
+msgstr ""
+
+#: static/ctb.js:265
+msgid "Cancel"
+msgstr ""

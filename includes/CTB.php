@@ -53,9 +53,15 @@ class CTB {
 		wp_enqueue_script(
 			'newfold-global-ctb',
 			$assetsDir . 'ctb.js',
-			array( 'a11y-dialog', 'wp-api-fetch', 'nfd-runtime' ),
+			array( 'a11y-dialog', 'wp-api-fetch', 'wp-i18n', 'nfd-runtime' ),
 			container()->plugin()->version,
 			true
+		);
+
+		wp_set_script_translations(
+			'newfold-global-ctb',
+			'wp-module-global-ctb',
+			NFD_MODULE_GLOBAL_CTB_DIR . '/languages'
 		);
 
 		// Inline script for global vars for ctb

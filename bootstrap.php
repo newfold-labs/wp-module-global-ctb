@@ -6,6 +6,21 @@ use function NewfoldLabs\WP\ModuleLoader\register;
 
 if ( function_exists( 'add_action' ) ) {
 
+	if ( ! defined( 'NFD_MODULE_GLOBAL_CTB_DIR' ) ) {
+		define( 'NFD_MODULE_GLOBAL_CTB_DIR', __DIR__ );
+	}
+
+	add_action(
+		'init',
+		static function () {
+			load_plugin_textdomain(
+				'wp-module-global-ctb',
+				false,
+				NFD_MODULE_GLOBAL_CTB_DIR . '/languages'
+			);
+		}
+	);
+
 	add_action(
 		'plugins_loaded',
 		function () {
