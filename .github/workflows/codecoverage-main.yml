@@ -13,15 +13,12 @@ on:
       - main
   workflow_dispatch:
 
-# Disable permissions for all available scopes by default.
-# Any needed permissions should be configured at the job level.
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   get-repo-name:
     runs-on: ubuntu-latest
-    permissions: {}
-    timeout-minutes: 5
     outputs:
       repository-name: ${{ steps.repo-name.outputs.name }}
     steps:
@@ -32,9 +29,8 @@ jobs:
   codecoverage:
     needs: get-repo-name
     permissions:
-      contents: write      # Required for reusable workflow to push coverage reports to gh-pages.
-      pull-requests: write # Required for reusable workflow to post pull request comments.
-    timeout-minutes: 120
+      contents: write
+      pull-requests: write
     uses: newfold-labs/workflows/.github/workflows/reusable-codecoverage.yml@main
     with:
       php-versions: '["7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
