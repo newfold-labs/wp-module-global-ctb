@@ -10,9 +10,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
   cancel-in-progress: true
 
-# Disable permissions for all available scopes by default.
-# Any needed permissions should be configured at the job level.
-permissions: {}
+# Limit default permissions to read-only; jobs requiring write access configure it at the job level.
+permissions:
+  contents: read
 
 jobs:
   setup:
@@ -34,7 +34,6 @@ jobs:
     needs: setup
     permissions:
       contents: read # Required to clone the repo (matches reusable workflow; private repo checkout).
-    timeout-minutes: 90
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
       module-repo: ${{ github.repository }}
@@ -47,7 +46,6 @@ jobs:
     needs: setup
     permissions:
       contents: read # Required to clone the repo (matches reusable workflow; private repo checkout).
-    timeout-minutes: 90
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
       module-repo: ${{ github.repository }}
@@ -61,7 +59,6 @@ jobs:
     needs: setup
     permissions:
       contents: read # Required to clone the repo (matches reusable workflow; private repo checkout).
-    timeout-minutes: 90
     uses: newfold-labs/workflows/.github/workflows/module-plugin-test-playwright.yml@main
     with:
       module-repo: ${{ github.repository }}
