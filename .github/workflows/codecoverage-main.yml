@@ -13,6 +13,7 @@ on:
       - main
   workflow_dispatch:
 
+# Limit default permissions to read-only; jobs requiring write access configure it at the job level.
 permissions:
   contents: read
 
@@ -29,8 +30,8 @@ jobs:
   codecoverage:
     needs: get-repo-name
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write      # Required for reusable workflow to push coverage reports to gh-pages.
+      pull-requests: write # Required for reusable workflow to post pull request comments.
     uses: newfold-labs/workflows/.github/workflows/reusable-codecoverage.yml@main
     with:
       php-versions: '["7.4", "8.0", "8.1", "8.2", "8.3", "8.4"]'
