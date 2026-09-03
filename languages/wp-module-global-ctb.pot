@@ -12,8 +12,12 @@ msgstr ""
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-module-global-ctb\n"
 
-#: static/ctb.js:265
-msgid "Cancel"
+#: bootstrap.php:30
+msgid "global-ctb"
+msgstr ""
+
+#: static/ctb.js:239
+msgid "Unable to complete purchase"
 msgstr ""
 
 #: static/ctb.js:244
@@ -24,10 +28,6 @@ msgstr ""
 msgid "Sorry, we are unable to load the product information at this time."
 msgstr ""
 
-#: static/ctb.js:239
-msgid "Unable to complete purchase"
-msgstr ""
-
-#: bootstrap.php:30
-msgid "global-ctb"
+#: static/ctb.js:265
+msgid "Cancel"
 msgstr ""
