@@ -17,7 +17,7 @@ const __dirname = dirname(__filename);
 const pluginDir = process.env.PLUGIN_DIR || process.cwd();
 
 // Build path to plugin helpers (.mjs extension for ES module compatibility)
-const finalHelpersPath = join(pluginDir, 'tests/playwright/helpers/index.mjs');
+const finalHelpersPath = join(pluginDir, 'tests/playwright/helpers/index.js');
 
 // Import plugin helpers using file:// URL
 const helpersUrl = pathToFileURL(finalHelpersPath).href;
