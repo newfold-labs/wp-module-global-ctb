@@ -14,5 +14,5 @@
   "devDependencies": {
     "playwright": "^1.63.0"
   },
-  "version": "1.4.0"
+  "version": "1.5.0"
 }
